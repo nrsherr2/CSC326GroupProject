@@ -2,6 +2,7 @@ package edu.ncsu.csc.itrust2.cucumber;
 
 import static org.junit.Assert.assertTrue;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -15,11 +16,17 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import edu.ncsu.csc.itrust2.forms.hcp_patient.PatientForm;
 import edu.ncsu.csc.itrust2.models.enums.AppointmentType;
+import edu.ncsu.csc.itrust2.models.enums.BloodType;
+import edu.ncsu.csc.itrust2.models.enums.Ethnicity;
+import edu.ncsu.csc.itrust2.models.enums.Gender;
 import edu.ncsu.csc.itrust2.models.enums.Role;
+import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.enums.Status;
 import edu.ncsu.csc.itrust2.models.persistent.AppointmentRequest;
 import edu.ncsu.csc.itrust2.models.persistent.DomainObject;
+import edu.ncsu.csc.itrust2.models.persistent.Patient;
 import edu.ncsu.csc.itrust2.models.persistent.User;
 
 public class AppointmentRequestStepDefs {
@@ -28,14 +35,40 @@ public class AppointmentRequestStepDefs {
     private final String    baseUrl = "http://localhost:8080/iTrust2";
 
     @Given ( "There is a sample HCP and sample Patient in the database" )
-    public void startingUsers () {
+    public void startingUsers () throws ParseException {
         final User hcp = new User( "hcp", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_HCP,
                 1 );
         hcp.save();
 
-        final User patient = new User( "patient", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_PATIENT, 1 );
+        final User patient = new User( "patient", "123456", Role.ROLE_PATIENT, 1 );
         patient.save();
+        final User mom = new User( "patientTestMom", "123456", Role.ROLE_PATIENT, 1 );
+        mom.save();
+        final User dad = new User( "patientTestDad", "123456", Role.ROLE_PATIENT, 1 );
+        dad.save();
+        final PatientForm form = new PatientForm();
+        form.setMother( mom.getUsername() );
+        form.setFather( dad.getUsername() );
+        form.setFirstName( "patient" );
+        form.setPreferredName( "patient" );
+        form.setLastName( "mcpatientface" );
+        form.setEmail( "bademail@ncsu.edu" );
+        form.setAddress1( "Some town" );
+        form.setAddress2( "Somewhere" );
+        form.setCity( "placecity" );
+        form.setState( State.AL.getName() );
+        form.setZip( "27606" );
+        form.setPhone( "111-111-1111" );
+        form.setDateOfBirth( "01/01/1901" );
+        form.setDateOfDeath( "01/01/2001" );
+        form.setCauseOfDeath( "Hit by a truck" );
+        form.setBloodType( BloodType.ABPos.getName() );
+        form.setEthnicity( Ethnicity.Asian.getName() );
+        form.setGender( Gender.Male.getName() );
+        form.setSelf( patient.getUsername() );
+
+        final Patient testPatient = new Patient( form );
+        testPatient.save();
     }
 
     @When ( "I log in as patient" )
