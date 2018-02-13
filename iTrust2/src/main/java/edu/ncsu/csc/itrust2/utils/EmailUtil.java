@@ -73,6 +73,7 @@ public class EmailUtil {
         props.put( "mail.smtp.starttls.enable", "true" );
         props.put( "mail.smtp.host", host );
         props.put( "mail.smtp.port", "587" );
+        props.put( "mail.smtp.ssl.trust", host );
 
         final Session session = Session.getInstance( props, new Authenticator() {
             @Override
