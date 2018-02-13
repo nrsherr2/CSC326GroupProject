@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Calendar;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -157,6 +159,10 @@ public class APIOfficeVisitTest {
         final UserForm patient = new UserForm( "patient", "123456", Role.ROLE_PATIENT, 1 );
         mvc.perform( post( "/api/v1/users" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( patient ) ) );
+        final Patient patientPatient = Patient.getPatient( "patient" );
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set( 1980, Calendar.AUGUST, 5, 3, 26, 19 );
+        patientPatient.setDateOfBirth( calendar );
 
         /* Create a Hospital to use too */
         final Hospital hospital = new Hospital( "iTrust Test Hospital 2", "1 iTrust Test Street", "27607", "NC" );
