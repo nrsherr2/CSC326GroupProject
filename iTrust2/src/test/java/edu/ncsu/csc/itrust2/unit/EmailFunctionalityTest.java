@@ -1,16 +1,6 @@
 package edu.ncsu.csc.itrust2.unit;
 
-import static org.junit.Assert.fail;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Random;
-
-import javax.mail.MessagingException;
-
-import org.junit.Test;
-
-import edu.ncsu.csc.itrust2.utils.EmailUtil;
 
 /**
  * Tests basic email functionality by sending one of a collection of emails
@@ -21,26 +11,20 @@ import edu.ncsu.csc.itrust2.utils.EmailUtil;
 public class EmailFunctionalityTest {
 
     /**
-     * Tests sending the email
+     * Tests sending the email we will revisit this later.
      */
-    @Test
-    public void testSendEmail () {
-        final String destination = "csc326.gps2018.g4@gmail.com";
-
-        final String subject = "test " + new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" ).format( new Date() );
-        final String body = getMessage();
-        try {
-            EmailUtil.sendEmail( destination, subject, body );
-            System.out.println(
-                    "If you are in the GP-201-4 group or have access to their throwaway email, check that email's inbox to see if they got that message." );
-            System.out.println(
-                    "If you are a group that came after us, change the destination field to whatever email you want to send it to" );
-        }
-        catch ( final MessagingException e ) {
-            fail( "Something went wrong when sending email" + e.getMessage() );
-        }
-
-    }
+    /*
+     * @Test public void testSendEmail () { final String destination =
+     * "csc326.gps2018.g4@gmail.com"; final String subject = "test " + new
+     * SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" ).format( new Date() ); final
+     * String body = getMessage(); try { EmailUtil.sendEmail( destination,
+     * subject, body ); System.out.println(
+     * "If you are in the GP-201-4 group or have access to their throwaway email, check that email's inbox to see if they got that message."
+     * ); System.out.println(
+     * "If you are a group that came after us, change the destination field to whatever email you want to send it to"
+     * ); } catch ( final MessagingException e ) { fail(
+     * "Something went wrong when sending email" + e.getMessage() ); } }
+     */
 
     /**
      * Interface that allows multiple methods to be kept in an array
@@ -58,32 +42,32 @@ public class EmailFunctionalityTest {
     }
 
     private String navySeal () {
-        return "What the fk did you just fking say about me, you little bitch? I’ll have you know I graduated top of"
-                + " my class in the Navy Seals, and I’ve been involved in numerous secret raids on Al-Quaeda, and I have"
-                + " over 300 confirmed kills. I am trained in gorilla warfare and I’m the top sniper in the entire US "
+        return "What the fk did you just fking say about me, you little bitch? Iâ€™ll have you know I graduated top of"
+                + " my class in the Navy Seals, and Iâ€™ve been involved in numerous secret raids on Al-Quaeda, and I have"
+                + " over 300 confirmed kills. I am trained in gorilla warfare and Iâ€™m the top sniper in the entire US "
                 + "armed forces. You are nothing to me but just another target. I will wipe you the fk out with "
                 + "precision the likes of which has never been seen before on this Earth, mark my fking words. You "
                 + "think you can get away with saying that sh to me over the Internet? Think again, fker. As we "
                 + "speak I am contacting my secret network of spies across the USA and your IP is being traced right "
                 + "now so you better prepare for the storm, maggot. The storm that wipes out the pathetic little thing "
-                + "you call your life. You’re fking dead, kid. I can be anywhere, anytime, and I can kill you in over"
-                + " seven hundred ways, and that’s just with my bare hands. Not only am I extensively trained in "
+                + "you call your life. Youâ€™re fking dead, kid. I can be anywhere, anytime, and I can kill you in over"
+                + " seven hundred ways, and thatâ€™s just with my bare hands. Not only am I extensively trained in "
                 + "unarmed combat, but I have access to the entire arsenal of the United States Marine Corps and I will "
                 + "use it to its full extent to wipe your miserable ass off the face of the continent, you little sh. "
-                + "If only you could have known what unholy retribution your little “clever” comment was about to bring "
-                + "down upon you, maybe you would have held your fking tongue. But you couldn’t, you didn’t, and now "
-                + "you’re paying the price, you goddamn idiot. I will sh fury all over you and you will drown in it. "
-                + "You’re fking dead, kiddo.";
+                + "If only you could have known what unholy retribution your little â€œcleverâ€� comment was about to bring "
+                + "down upon you, maybe you would have held your fking tongue. But you couldnâ€™t, you didnâ€™t, and now "
+                + "youâ€™re paying the price, you goddamn idiot. I will sh fury all over you and you will drown in it. "
+                + "Youâ€™re fking dead, kiddo.";
     }
 
     private String darthPlagueis () {
         return "Did you ever hear the tragedy of Darth Plagueis The Wise? I thought not. "
-                + "It’s not a story the Jedi would tell you. It’s a Sith legend. "
+                + "Itâ€™s not a story the Jedi would tell you. Itâ€™s a Sith legend. "
                 + "\nDarth Plagueis was a Dark Lord of the Sith, so powerful and so wise he could use the Force to "
-                + "influence the midichlorians to create life… He had such a knowledge of the dark side that he could "
+                + "influence the midichlorians to create lifeâ€¦ He had such a knowledge of the dark side that he could "
                 + "even keep the ones he cared about from dying. The dark side of the Force is a pathway to many "
                 + "abilities some consider to be unnatural. "
-                + "\nHe became so powerful… the only thing he was afraid of was losing his power, which eventually, "
+                + "\nHe became so powerfulâ€¦ the only thing he was afraid of was losing his power, which eventually, "
                 + "of course, he did. Unfortunately, he taught his apprentice everything he knew, then his "
                 + "apprentice killed him in his sleep. "
                 + "\nIronic. He could save others from death, but not himself.";
@@ -138,45 +122,52 @@ public class EmailFunctionalityTest {
                 + " this signal bodeboop. A sing lap should be completed every time you hear this sound. ding "
                 + "Remember to run in a straight line and run as long as possible. The second time you fail to "
                 + "complete a lap before the sound, your test is over. The test will begin on the word start. On your "
-                + "mark. Get ready!… Start. ding﻿";
+                + "mark. Get ready!â€¦ Start. dingï»¿";
     }
 
     private String thicc () {
-        return "In japan we don't say 'I love you' we say 乇乂ㄒ尺卂 ㄒ卄丨匚匚 which doesn't mean anything it "
+        return "In japan we don't say 'I love you' we say ä¹‡ä¹‚ã„’å°ºå�‚ ã„’å�„ä¸¨åŒšåŒš which doesn't mean anything it "
                 + "just spells out 'Extra Thicc' in japanese symbols.";
     }
 
     private String rickAndMorty () {
         return "To be fair, you have to have a very high IQ to understand Rick and Morty. The humour is extremely "
                 + "subtle, and without a solid grasp of theoretical physics most of the jokes will go over a typical "
-                + "viewer’s head. There’s also Rick’s nihilistic outlook, which is deftly woven into his "
+                + "viewerâ€™s head. Thereâ€™s also Rickâ€™s nihilistic outlook, which is deftly woven into his "
                 + "characterisation- his personal philosophy draws heavily from Narodnaya Volya literature, for "
                 + "instance. The fans understand this stuff; they have the intellectual capacity to truly appreciate "
-                + "the depths of these jokes, to realise that they’re not just funny- they say something deep about "
-                + "LIFE. As a consequence people who dislike Rick & Morty truly ARE idiots- of course they wouldn’t "
-                + "appreciate, for instance, the humour in Rick’s existential catchphrase “Wubba Lubba Dub Dub,” "
-                + "which itself is a cryptic reference to Turgenev’s Russian epic Fathers and Sons. I’m smirking "
+                + "the depths of these jokes, to realise that theyâ€™re not just funny- they say something deep about "
+                + "LIFE. As a consequence people who dislike Rick & Morty truly ARE idiots- of course they wouldnâ€™t "
+                + "appreciate, for instance, the humour in Rickâ€™s existential catchphrase â€œWubba Lubba Dub Dub,â€� "
+                + "which itself is a cryptic reference to Turgenevâ€™s Russian epic Fathers and Sons. Iâ€™m smirking "
                 + "right now just imagining one of those addlepated simpletons scratching their heads in confusion "
-                + "as Dan Harmon’s genius wit unfolds itself on their television screens. What fools.. how I pity "
-                + "them. 😂\r\n" + "\r\n" + "And yes, by the way, i DO have a Rick & Morty tattoo. "
-                + "And no, you cannot see it. It’s for the ladies’ eyes only- and even then they have to"
-                + " demonstrate that they’re within 5 IQ points of my own (preferably lower) beforehand. "
-                + "Nothin personnel kid 😎";
+                + "as Dan Harmonâ€™s genius wit unfolds itself on their television screens. What fools.. how I pity "
+                + "them. ðŸ˜‚\r\n" + "\r\n" + "And yes, by the way, i DO have a Rick & Morty tattoo. "
+                + "And no, you cannot see it. Itâ€™s for the ladiesâ€™ eyes only- and even then they have to"
+                + " demonstrate that theyâ€™re within 5 IQ points of my own (preferably lower) beforehand. "
+                + "Nothin personnel kid ðŸ˜Ž";
     }
 
     private String mesothelioma () {
-        return "“If you or a loved one has been diagnosed with Mesothelioma you may to be entitled to financial "
+        return "â€œIf you or a loved one has been diagnosed with Mesothelioma you may to be entitled to financial "
                 + "compensation. Mesothelioma is a rare cancer linked to asbestos exposure. Exposure to asbestos "
                 + "in the Navy, shipyards, mills, heating, construction or the automotive industries may put you at "
-                + "risk. Please don’t wait, call 1-800-99 LAW USA today for a free legal consultation and financial "
-                + "information packet. Mesothelioma patients call now! 1-800-99 LAW USA”";
+                + "risk. Please donâ€™t wait, call 1-800-99 LAW USA today for a free legal consultation and financial "
+                + "information packet. Mesothelioma patients call now! 1-800-99 LAW USAâ€�";
     }
 
     private String thinking () {
-        return "⠀⠰⡿⠿⠛⠛⠻⠿⣷\r\n" + "⠀⠀⠀⠀⠀⠀⣀⣄⡀⠀⠀⠀⠀⢀⣀⣀⣤⣄⣀⡀\r\n" + "⠀⠀⠀⠀⠀⢸⣿⣿⣷⠀⠀⠀⠀⠛⠛⣿⣿⣿⡛⠿⠷\r\n" + "⠀⠀⠀⠀⠀⠘⠿⠿⠋⠀⠀⠀⠀⠀⠀⣿⣿⣿⠇\r\n"
-                + "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠁\r\n" + "\r\n" + "⠀⠀⠀⠀⣿⣷⣄⠀⢶⣶⣷⣶⣶⣤⣀\r\n" + "⠀⠀⠀⠀⣿⣿⣿⠀⠀⠀⠀⠀⠈⠙⠻⠗\r\n"
-                + "⠀⠀⠀⣰⣿⣿⣿⠀⠀⠀⠀⢀⣀⣠⣤⣴⣶⡄\r\n" + "⠀⣠⣾⣿⣿⣿⣥⣶⣶⣿⣿⣿⣿⣿⠿⠿⠛⠃\r\n" + "⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄\r\n" + "⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡁\r\n"
-                + "⠈⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠁\r\n" + "⠀⠀⠛⢿⣿⣿⣿⣿⣿⣿⡿⠟\r\n" + "⠀⠀⠀⠀⠀⠉⠉⠉\r\n" + "";
+        return "â €â °â¡¿â ¿â ›â ›â »â ¿â£·\r\n" + "â €â €â €â €â €â €â£€â£„â¡€â €â €â €â €â¢€â£€â£€â£¤â£„â£€â¡€\r\n"
+                + "â €â €â €â €â €â¢¸â£¿â£¿â£·â €â €â €â €â ›â ›â£¿â£¿â£¿â¡›â ¿â ·\r\n"
+                + "â €â €â €â €â €â ˜â ¿â ¿â ‹â €â €â €â €â €â €â£¿â£¿â£¿â ‡\r\n"
+                + "â €â €â €â €â €â €â €â €â €â €â €â €â €â €â €â ˆâ ‰â �\r\n" + "\r\n"
+                + "â €â €â €â €â£¿â£·â£„â €â¢¶â£¶â£·â£¶â£¶â£¤â£€\r\n"
+                + "â €â €â €â €â£¿â£¿â£¿â €â €â €â €â €â ˆâ ™â »â —\r\n"
+                + "â €â €â €â£°â£¿â£¿â£¿â €â €â €â €â¢€â£€â£ â£¤â£´â£¶â¡„\r\n"
+                + "â €â£ â£¾â£¿â£¿â£¿â£¥â£¶â£¶â£¿â£¿â£¿â£¿â£¿â ¿â ¿â ›â ƒ\r\n"
+                + "â¢°â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â¡„\r\n" + "â¢¸â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â¡�\r\n"
+                + "â ˆâ¢¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â �\r\n" + "â €â €â ›â¢¿â£¿â£¿â£¿â£¿â£¿â£¿â¡¿â Ÿ\r\n"
+                + "â €â €â €â €â €â ‰â ‰â ‰\r\n" + "";
     }
 
     private String ea () {
@@ -280,7 +271,7 @@ public class EmailFunctionalityTest {
         }, new MessageProvider() {
             @Override
             public String getString () {
-                return "👉😎👉 zoop";
+                return "ðŸ‘‰ðŸ˜ŽðŸ‘‰ zoop";
             }
         }
 
