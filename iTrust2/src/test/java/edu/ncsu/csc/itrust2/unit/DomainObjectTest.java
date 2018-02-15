@@ -15,6 +15,8 @@ import org.hibernate.TransientObjectException;
 import org.junit.Test;
 
 import edu.ncsu.csc.itrust2.forms.hcp.OfficeVisitForm;
+import edu.ncsu.csc.itrust2.models.enums.HouseholdSmokingStatus;
+import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
@@ -78,17 +80,122 @@ public class DomainObjectTest {
     @Test
     public void testBasicHealthMetrics () {
         BasicHealthMetrics mets = null;
-        final BasicHealthMetrics temp = new BasicHealthMetrics();
+        BasicHealthMetrics temp = null;
+
         assertNull( mets );
+        assertNull( temp );
+
         mets = new BasicHealthMetrics();
+
         mets.hashCode();
-        assertTrue( mets.equals( temp ) );
-        // mets.delete();
-        mets.setDiastolic( 1 );
-        mets.hashCode();
+
         assertFalse( mets.equals( temp ) );
 
-        assertNotNull( mets );
+        temp = new BasicHealthMetrics();
+
+        temp.hashCode();
+
+        assertFalse( mets.equals( new Patient() ) );
+
+        temp.setDiastolic( 1 );
+        assertFalse( mets.equals( temp ) );
+
+        temp.hashCode();
+
+        mets.setDiastolic( 2 );
+
+        assertFalse( mets.equals( temp ) );
+
+        mets = new BasicHealthMetrics();
+        temp = new BasicHealthMetrics();
+        temp.setHcp( new User( "hcpUsername", "hcpPassword", Role.ROLE_HCP, 1 ) );
+        temp.hashCode();
+        assertFalse( mets.equals( temp ) );
+        mets.setHcp( new User( "other", "other", Role.ROLE_HCP, 1 ) );
+        assertFalse( mets.equals( temp ) );
+
+        mets = new BasicHealthMetrics();
+        temp = new BasicHealthMetrics();
+        temp.setHdl( 1 );
+        temp.hashCode();
+        assertFalse( mets.equals( temp ) );
+        mets.setHdl( 2 );
+        assertFalse( mets.equals( temp ) );
+
+        mets = new BasicHealthMetrics();
+        temp = new BasicHealthMetrics();
+        temp.setHeadCircumference( (float) 1.1 );
+        temp.hashCode();
+        assertFalse( mets.equals( temp ) );
+        mets.setHeadCircumference( (float) 1.2 );
+        assertFalse( mets.equals( temp ) );
+
+        mets = new BasicHealthMetrics();
+        temp = new BasicHealthMetrics();
+        temp.setHeight( (float) 2.1 );
+        temp.hashCode();
+        assertFalse( mets.equals( temp ) );
+        mets.setHeight( (float) 3.3 );
+        assertFalse( mets.equals( temp ) );
+
+        mets = new BasicHealthMetrics();
+        temp = new BasicHealthMetrics();
+        temp.setHouseSmokingStatus( HouseholdSmokingStatus.INDOOR );
+        temp.hashCode();
+        assertFalse( mets.equals( temp ) );
+        mets.setHouseSmokingStatus( HouseholdSmokingStatus.OUTDOOR );
+        assertFalse( mets.equals( temp ) );
+
+        mets = new BasicHealthMetrics();
+        temp = new BasicHealthMetrics();
+        temp.setLdl( 1 );
+        temp.hashCode();
+        assertFalse( mets.equals( temp ) );
+        mets.setLdl( 2 );
+        assertFalse( mets.equals( temp ) );
+
+        mets = new BasicHealthMetrics();
+        temp = new BasicHealthMetrics();
+        temp.setPatient( new User( "user", "pw", Role.ROLE_PATIENT, 1 ) );
+        temp.hashCode();
+        assertFalse( mets.equals( temp ) );
+        mets.setPatient( new User( "fake", "faux", Role.ROLE_PATIENT, 1 ) );
+        assertFalse( mets.equals( temp ) );
+
+        mets = new BasicHealthMetrics();
+        temp = new BasicHealthMetrics();
+        temp.setPatientSmokingStatus( PatientSmokingStatus.EVERYDAY );
+        temp.hashCode();
+        assertFalse( mets.equals( temp ) );
+        mets.setPatientSmokingStatus( PatientSmokingStatus.NEVER );
+        assertFalse( mets.equals( temp ) );
+
+        mets = new BasicHealthMetrics();
+        temp = new BasicHealthMetrics();
+        temp.setSystolic( new Integer( 1 ) );
+        temp.hashCode();
+        assertFalse( mets.equals( temp ) );
+        mets.setSystolic( new Integer( 2 ) );
+        assertFalse( mets.equals( temp ) );
+
+        mets = new BasicHealthMetrics();
+        temp = new BasicHealthMetrics();
+        temp.setTri( new Integer( 100 ) );
+        temp.hashCode();
+        assertFalse( mets.equals( temp ) );
+        mets.setTri( new Integer( 200 ) );
+        assertFalse( mets.equals( temp ) );
+
+        mets = new BasicHealthMetrics();
+        temp = new BasicHealthMetrics();
+        temp.setWeight( (float) 1.1 );
+        temp.hashCode();
+        assertFalse( mets.equals( temp ) );
+        mets.setWeight( (float) 2.2 );
+        assertFalse( mets.equals( temp ) );
+
+        temp = mets;
+        assertTrue( mets.equals( temp ) );
     }
 
     @Test
@@ -96,11 +203,11 @@ public class DomainObjectTest {
         final User patti = new User( "pusn", "ppwd", Role.ROLE_PATIENT, 1 );
         final User hcpuser = new User( "husn", "hpwd", Role.ROLE_HCP, 1 );
 
-        Patient p = new Patient();
-        p = Patient.getPatient( patti.getUsername() );
-
         Calendar.getInstance().set( 1997, Calendar.JULY, 2, 16, 43 );
         final Calendar dob = Calendar.getInstance();
+
+        final Patient p = new Patient( patti );
+        p.setDateOfBirth( dob );
 
         Calendar.getInstance().set( 2018, Calendar.FEBRUARY, 14, 15, 9 );
         final OfficeVisit visit = new OfficeVisit();
