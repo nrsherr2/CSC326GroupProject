@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Calendar;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,13 +24,21 @@ import org.springframework.web.context.WebApplicationContext;
 import edu.ncsu.csc.itrust2.config.RootConfiguration;
 import edu.ncsu.csc.itrust2.forms.admin.UserForm;
 import edu.ncsu.csc.itrust2.forms.hcp.OfficeVisitForm;
+import edu.ncsu.csc.itrust2.forms.hcp_patient.PatientForm;
 import edu.ncsu.csc.itrust2.forms.patient.AppointmentRequestForm;
 import edu.ncsu.csc.itrust2.models.enums.AppointmentType;
+import edu.ncsu.csc.itrust2.models.enums.BloodType;
+import edu.ncsu.csc.itrust2.models.enums.Ethnicity;
+import edu.ncsu.csc.itrust2.models.enums.Gender;
+import edu.ncsu.csc.itrust2.models.enums.HouseholdSmokingStatus;
+import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.Role;
+import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.enums.Status;
 import edu.ncsu.csc.itrust2.models.persistent.Hospital;
 import edu.ncsu.csc.itrust2.models.persistent.OfficeVisit;
 import edu.ncsu.csc.itrust2.models.persistent.Patient;
+import edu.ncsu.csc.itrust2.models.persistent.User;
 import edu.ncsu.csc.itrust2.mvc.config.WebMvcConfiguration;
 
 /**
@@ -172,6 +182,120 @@ public class APIOfficeVisitTest {
         visit.setNotes( "Test office visit" );
         visit.setType( AppointmentType.GENERAL_CHECKUP.toString() );
         visit.setHospital( "iTrust Test Hospital 2" );
+
+        /* Create the Office Visit */
+        mvc.perform( post( "/api/v1/officevisits" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( visit ) ) ).andExpect( status().isOk() );
+
+        mvc.perform( get( "/api/v1/officevisits" ) ).andExpect( status().isOk() )
+                .andExpect( content().contentType( MediaType.APPLICATION_JSON_UTF8_VALUE ) );
+
+        /*
+         * We need the ID of the office visit that actually got _saved_ when
+         * calling the API above. This will get it
+         */
+        final Long id = OfficeVisit.getForPatient( patient.getUsername() ).get( 0 ).getId();
+
+        visit.setId( id.toString() );
+
+        // Second post should fail with a conflict since it already exists
+        mvc.perform( post( "/api/v1/officevisits" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( visit ) ) ).andExpect( status().isConflict() );
+
+        mvc.perform( get( "/api/v1/officevisits/" + id ) ).andExpect( status().isOk() )
+                .andExpect( content().contentType( MediaType.APPLICATION_JSON_UTF8_VALUE ) );
+
+        visit.setTime( "9:45 AM" );
+
+        mvc.perform( put( "/api/v1/officevisits/" + id ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( visit ) ) ).andExpect( status().isOk() )
+                .andExpect( content().contentType( MediaType.APPLICATION_JSON_UTF8_VALUE ) );
+
+        // PUT with the non-matching IDs should fail
+        mvc.perform( put( "/api/v1/officevisits/" + 1 ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( visit ) ) ).andExpect( status().isConflict() );
+
+        // PUT with ID not in database should fail
+        final long tempId = 101;
+        visit.setId( "101" );
+        mvc.perform( put( "/api/v1/officevisits/" + tempId ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( visit ) ) ).andExpect( status().isNotFound() );
+
+        // Reset ID to old id
+        visit.setId( id.toString() );
+
+        mvc.perform( delete( "/api/v1/officevisits/" + id ) ).andExpect( status().isOk() );
+
+        mvc.perform( delete( "/api/v1/officevisits" ) );
+
+    }
+
+    /**
+     * Tests OfficeVisitAPI, modified version of testOfficeVisitAPI originally
+     * written by teaching staff, modified by Vincent Renich
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testOfficeVisitAPIStudent () throws Exception {
+
+        /*
+         * Create a HCP and a Patient to use. If they already exist, this will
+         * do nothing
+         */
+        final UserForm hcp = new UserForm( "hcp", "123456", Role.ROLE_HCP, 1 );
+        mvc.perform( post( "/api/v1/users" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( hcp ) ) );
+
+        final UserForm patient = new UserForm( "patient", "123456", Role.ROLE_PATIENT, 1 );
+        mvc.perform( post( "/api/v1/users" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( patient ) ) );
+        final User userPatient = User.getByName( "patient" );
+        final Patient patientPatient = new Patient( userPatient );
+        patientPatient.setId( new Long( User.getUsers().size() ) );
+        patientPatient.setFirstName( "John" );
+        patientPatient.setLastName( "Doe" );
+        patientPatient.setPreferredName( "Joe" );
+        patientPatient.setAddress1( "2 iTrust Test Street" );
+        patientPatient.setAddress2( "" );
+        patientPatient.setCity( "Raleigh" );
+        patientPatient.setState( State.NC );
+        patientPatient.setZip( "27607" );
+        patientPatient.setPhone( "555-555-5555" );
+        patientPatient.setGender( Gender.Male );
+        patientPatient.setBloodType( BloodType.ANeg );
+        patientPatient.setEthnicity( Ethnicity.Caucasian );
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set( 1980, Calendar.AUGUST, 5, 3, 26, 19 );
+        patientPatient.setDateOfBirth( calendar );
+        final PatientForm formPatient = new PatientForm( patientPatient );
+        mvc.perform( post( "/api/v1/patients" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( formPatient ) ) );
+
+        /* Create a Hospital to use too */
+        final Hospital hospital = new Hospital( "iTrust Test Hospital 2", "1 iTrust Test Street", "27607", "NC" );
+        mvc.perform( post( "/api/v1/hospitals" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( hospital ) ) );
+
+        mvc.perform( delete( "/api/v1/officevisits" ) );
+        final OfficeVisitForm visit = new OfficeVisitForm();
+        visit.setDate( "4/16/2048" );
+        visit.setTime( "9:50 AM" );
+        visit.setHcp( "hcp" );
+        visit.setPatient( "patient" );
+        visit.setNotes( "Test office visit" );
+        visit.setType( AppointmentType.GENERAL_CHECKUP.toString() );
+        visit.setHospital( "iTrust Test Hospital 2" );
+        visit.setHeight( new Float( 8.2 ) );
+        visit.setWeight( new Float( 8.2 ) );
+        visit.setHeadCircumference( new Float( 8.2 ) );
+        visit.setSystolic( 102 );
+        visit.setDiastolic( 301 );
+        visit.setHdl( 3 );
+        visit.setLdl( 3 );
+        visit.setTri( 250 );
+        visit.setHouseSmokingStatus( HouseholdSmokingStatus.NONSMOKING );
+        visit.setPatientSmokingStatus( PatientSmokingStatus.NEVER );
 
         /* Create the Office Visit */
         mvc.perform( post( "/api/v1/officevisits" ).contentType( MediaType.APPLICATION_JSON )
