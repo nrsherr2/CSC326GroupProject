@@ -67,6 +67,7 @@ public class APIPasswordController extends APIController {
 
             LoggerUtil.log( TransactionType.PASSWORD_UPDATE_FAILURE, user.getUsername(),
                     "Could not change password for user " + user.getUsername() );
+            // send the user an email saying their password was updated
             return new ResponseEntity( errorResponse( "Failed to change password" ), HttpStatus.BAD_REQUEST );
         }
         catch ( final Exception e ) {

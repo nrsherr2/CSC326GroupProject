@@ -103,6 +103,7 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
                         lock.save();
                         LoggerUtil.log( TransactionType.USER_LOCKOUT, username, null,
                                 username + " has been locked out for 1 hour." );
+                        //send an email notifying this person they were locked out
                         this.getRedirectStrategy().sendRedirect( request, response, "/login?locked" );
                     }
                     return;
