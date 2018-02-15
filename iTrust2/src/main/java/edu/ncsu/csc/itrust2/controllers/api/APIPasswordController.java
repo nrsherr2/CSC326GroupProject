@@ -1,6 +1,8 @@
 package edu.ncsu.csc.itrust2.controllers.api;
 
 import java.net.InetAddress;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -62,12 +64,12 @@ public class APIPasswordController extends APIController {
                 user.save();
                 LoggerUtil.log( TransactionType.PASSWORD_UPDATE_SUCCESS, user.getUsername(),
                         "Successfully changed password for user " + user.getUsername() );
+                sendNotification( user );
                 return new ResponseEntity( successResponse( "Password changed successfully" ), HttpStatus.OK );
             }
 
             LoggerUtil.log( TransactionType.PASSWORD_UPDATE_FAILURE, user.getUsername(),
                     "Could not change password for user " + user.getUsername() );
-            // send the user an email saying their password was updated
             return new ResponseEntity( errorResponse( "Failed to change password" ), HttpStatus.BAD_REQUEST );
         }
         catch ( final Exception e ) {
@@ -78,6 +80,33 @@ public class APIPasswordController extends APIController {
                             "Could not change password for " + user.getUsername() + " because of " + e.getMessage() ),
                     HttpStatus.BAD_REQUEST );
         }
+    }
+
+    private void sendNotification ( User user ) throws Exception {
+        final Personnel person = Personnel.getByName( user );
+        String email = "";
+        String firstName = "";
+        if ( person != null ) {
+            email = person.getEmail();
+            firstName = person.getFirstName();
+        }
+        else {
+            final Patient patient = Patient.getPatient( user );
+            if ( patient != null ) {
+                email = patient.getEmail();
+                firstName = patient.getFirstName();
+            }
+            else {
+                throw new Exception( "No Patient or Personnel on file for " + user.getId() );
+            }
+        }
+        final String time = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" ).format( new Date() );
+        final String body = "Hello, " + firstName + ",\n You, (" + user.getUsername()
+                + ") submitted a request to change your password at " + time
+                + ". This request has been processed by our servers, and you may now log in using your new password.\n"
+                + " If you did not request to change your password, please contact an administrator.\\n\\n--iTrust2 Ad"
+                + "min";
+        EmailUtil.sendEmail( email, "iTrust2 Password Change", body );
     }
 
     /**
