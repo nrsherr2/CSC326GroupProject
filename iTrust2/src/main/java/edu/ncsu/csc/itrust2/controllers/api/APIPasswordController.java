@@ -61,10 +61,10 @@ public class APIPasswordController extends APIController {
         try {
             if ( form.validateChange( user ) ) {
                 user.setPassword( pe.encode( form.getNewPassword() ) );
+                sendNotification( user );
                 user.save();
                 LoggerUtil.log( TransactionType.PASSWORD_UPDATE_SUCCESS, user.getUsername(),
                         "Successfully changed password for user " + user.getUsername() );
-                sendNotification( user );
                 return new ResponseEntity( successResponse( "Password changed successfully" ), HttpStatus.OK );
             }
 
