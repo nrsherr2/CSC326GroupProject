@@ -68,6 +68,8 @@ public class HibernateDataGenerator {
         final Calendar timBirth = Calendar.getInstance();
         timBirth.add( Calendar.YEAR, -1 ); // tim is one year old
         tim.setDateOfBirth( timBirth );
+        tim.setEmail( "csc326.gps2018.g4@gmail.com" ); // group 4 throwaway email 2018
+        // change that email, future groups
         tim.save();
 
         final Patient bob = new Patient();
@@ -80,6 +82,8 @@ public class HibernateDataGenerator {
         final Calendar bobBirth = Calendar.getInstance();
         bobBirth.add( Calendar.YEAR, -4 ); // bob is four years old
         bob.setDateOfBirth( bobBirth );
+        bob.setEmail( "csc326.gps2018.g4@gmail.com" ); //group 4 throwaway email spring 2018
+        // change the email in the future, groups after us!
         bob.save();
 
         final Patient alice = new Patient();
@@ -92,6 +96,8 @@ public class HibernateDataGenerator {
         final Calendar aliceBirth = Calendar.getInstance();
         aliceBirth.add( Calendar.YEAR, -13 ); // alice is thirteen years old
         alice.setDateOfBirth( aliceBirth );
+        alice.setEmail( "csc326.gps2018.g4@gmail.com" ); // group 4 throwaway email spring 2018
+        //change that email address, future groups.
         alice.save();
 
         final Hospital hosp = new Hospital( "General Hostpital", "123 Main St", "12345", "NC" );
