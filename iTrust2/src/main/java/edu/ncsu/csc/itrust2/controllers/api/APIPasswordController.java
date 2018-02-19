@@ -3,6 +3,7 @@ package edu.ncsu.csc.itrust2.controllers.api;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -61,7 +62,53 @@ public class APIPasswordController extends APIController {
         try {
             if ( form.validateChange( user ) ) {
                 user.setPassword( pe.encode( form.getNewPassword() ) );
-                sendNotification( user );
+
+                // the email we're going to send to
+                String email = "";
+                // the first name of who we're sending to
+                String firstName = "";
+                // first check if this user is faculty
+                List<Personnel> faculty = Personnel.getPersonnel();
+                Personnel person = null;
+                for ( int i = 0; i < faculty.size(); i++ ) {
+                    System.out.println( "faclist includes " + faculty.get( i ).getSelf().getId() );
+                    // I really don't expect this to work
+                    if ( faculty.get( i ).getSelf().getId().equals( user.getId() ) ) {
+                        person = faculty.get( i );
+                        break;
+                    }
+                }
+                if ( person != null ) {
+                    email = person.getEmail();
+                    firstName = person.getFirstName();
+                }
+                else {
+                    Patient pat = null;
+                    List<Patient> patientList = Patient.getPatients();
+                    for ( int i = 0; i < patientList.size(); i++ ) {
+                        System.out.println( "Patlist includes " + patientList.get( i ).getSelf().getId() );
+                        if ( patientList.get( i ).getSelf().getId().equals( user.getId() ) ) {
+                            pat = patientList.get( i );
+                            break;
+                        }
+
+                    }
+                    if ( pat != null ) {
+                        email = pat.getEmail();
+                        firstName = pat.getFirstName();
+                    }
+                    else {
+                        throw new Exception( "No Patient or Personnel on file for " + user.getId() );
+                    }
+                }
+                final String time = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" ).format( new Date() );
+                final String body = "Hello, " + firstName + ",\n You, (" + user.getUsername()
+                        + ") submitted a request to change your password at " + time
+                        + ". This request has been processed by our servers, and you may now log in using your new password.\n"
+                        + " If you did not request to change your password, please contact an administrator.\\n\\n--iTrust2 Ad"
+                        + "min";
+                EmailUtil.sendEmail( email, "iTrust2 Password Change", body );
+
                 user.save();
                 LoggerUtil.log( TransactionType.PASSWORD_UPDATE_SUCCESS, user.getUsername(),
                         "Successfully changed password for user " + user.getUsername() );
@@ -73,6 +120,7 @@ public class APIPasswordController extends APIController {
             return new ResponseEntity( errorResponse( "Failed to change password" ), HttpStatus.BAD_REQUEST );
         }
         catch ( final Exception e ) {
+            System.err.println( e );
             LoggerUtil.log( TransactionType.PASSWORD_UPDATE_FAILURE, user.getUsername(),
                     "Could not change password for user " + user.getUsername() );
             return new ResponseEntity(
@@ -82,7 +130,7 @@ public class APIPasswordController extends APIController {
         }
     }
 
-    private void sendNotification ( User user ) throws Exception {
+    /*private void sendNotification ( User user ) throws Exception {
         final Personnel person = Personnel.getByName( user );
         String email = "";
         String firstName = "";
@@ -107,7 +155,7 @@ public class APIPasswordController extends APIController {
                 + " If you did not request to change your password, please contact an administrator.\\n\\n--iTrust2 Ad"
                 + "min";
         EmailUtil.sendEmail( email, "iTrust2 Password Change", body );
-    }
+    }*/
 
     /**
      * Used by an unauthenticated user to request a password reset. Sends an
