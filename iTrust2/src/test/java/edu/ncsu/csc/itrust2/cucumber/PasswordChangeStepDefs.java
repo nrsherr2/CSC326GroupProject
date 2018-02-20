@@ -107,9 +107,8 @@ public class PasswordChangeStepDefs {
                     "Password changed successfully" ) );
         }
         catch ( final Exception e ) {
-            fail(e.getMessage());
-            fail( driver.findElement( By.name( "message" ) ).getText() + "\n" + token.getId() + "\n"
-                    + token.getTempPasswordPlaintext() );
+            //fail(e.getMessage());
+            fail( driver.findElement( By.name( "message" ) ).getText() );
         }
         // driver.findElement( By.id( "logout" ) ).click();
     }

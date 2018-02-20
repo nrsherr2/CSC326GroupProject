@@ -143,12 +143,21 @@ public class HibernateDataGenerator {
                 Role.ROLE_HCP, 1 );
         svang.save();
 
+        
+        final Personnel pwtp1 = new Personnel();
+        pwtp1.setFirstName( "TRAPPEDINITRUST" );
+        pwtp1.setLastName( "GETMEOUT" );
+        pwtp1.setEmail( "csc326.gps2018.g4@gmail.com" );
+        pwtp1.setSpecialty( "yes" );
         // generate users for testing password change & reset
         for ( int i = 1; i <= 5; i++ ) {
             final User pwtestuser = new User( "pwtestuser" + i,
                     "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_HCP, 1 );
             pwtestuser.save();
         }
+        final User tst = User.getByName( "pwtestuser1" );
+        pwtp1.setSelf( tst );
+        pwtp1.save();
 
         final User lockoutUser = new User( "lockoutUser",
                 "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_HCP, 1 );
@@ -187,6 +196,8 @@ public class HibernateDataGenerator {
         bobBirth.add( Calendar.YEAR, -4 ); // bob is four years old
         bob.setDateOfBirth( bobBirth );
         bob.save();
+        
+
 
         final Patient alice = new Patient();
         alice.setFirstName( "AliceThirteen" );
@@ -198,6 +209,8 @@ public class HibernateDataGenerator {
         final Calendar aliceBirth = Calendar.getInstance();
         aliceBirth.add( Calendar.YEAR, -13 ); // alice is thirteen years old
         alice.setDateOfBirth( aliceBirth );
+        alice.setEmail( "csc326.gps2018.g4@gmail.com" ); // group 4 throwaway email spring 2018
+        //change that email address, future groups.
         alice.save();
 
         final Hospital hosp = new Hospital( "General Hospital", "123 Main St", "12345", "NC" );
