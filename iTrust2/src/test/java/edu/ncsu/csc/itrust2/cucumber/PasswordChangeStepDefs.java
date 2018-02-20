@@ -42,7 +42,7 @@ public class PasswordChangeStepDefs {
     @Before
     public void setup () {
         driver = new HtmlUnitDriver( true );
-        wait = new WebDriverWait( driver, 5 );
+        wait = new WebDriverWait( driver, 30 );
 
         HibernateDataGenerator.generateUsers();
     }
@@ -107,6 +107,7 @@ public class PasswordChangeStepDefs {
                     "Password changed successfully" ) );
         }
         catch ( final Exception e ) {
+            fail(e.getMessage());
             fail( driver.findElement( By.name( "message" ) ).getText() + "\n" + token.getId() + "\n"
                     + token.getTempPasswordPlaintext() );
         }

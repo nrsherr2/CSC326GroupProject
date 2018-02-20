@@ -68,8 +68,7 @@ public class HibernateDataGenerator {
         final Calendar timBirth = Calendar.getInstance();
         timBirth.add( Calendar.YEAR, -1 ); // tim is one year old
         tim.setDateOfBirth( timBirth );
-        tim.setEmail( "csc326.gps2018.g4@gmail.com" ); // group 4 throwaway email 2018
-        // change that email, future groups
+        //Tim doesn't deserve an email
         tim.save();
 
         final Patient bob = new Patient();
