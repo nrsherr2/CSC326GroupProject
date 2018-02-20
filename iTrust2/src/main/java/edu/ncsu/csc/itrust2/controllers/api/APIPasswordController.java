@@ -71,7 +71,7 @@ public class APIPasswordController extends APIController {
                 List<Personnel> faculty = Personnel.getPersonnel();
                 Personnel person = null;
                 for ( int i = 0; i < faculty.size(); i++ ) {
-                    System.out.println( "faclist includes " + faculty.get( i ).getSelf().getId() );
+                    //System.out.println( "faclist includes " + faculty.get( i ).getSelf().getId() );
                     // I really don't expect this to work
                     if ( faculty.get( i ).getSelf().getId().equals( user.getId() ) ) {
                         person = faculty.get( i );
@@ -86,7 +86,7 @@ public class APIPasswordController extends APIController {
                     Patient pat = null;
                     List<Patient> patientList = Patient.getPatients();
                     for ( int i = 0; i < patientList.size(); i++ ) {
-                        System.out.println( "Patlist includes " + patientList.get( i ).getSelf().getId() );
+                        //System.out.println( "Patlist includes " + patientList.get( i ).getSelf().getId() );
                         if ( patientList.get( i ).getSelf().getId().equals( user.getId() ) ) {
                             pat = patientList.get( i );
                             break;
@@ -105,7 +105,7 @@ public class APIPasswordController extends APIController {
                 final String body = "Hello, " + firstName + ",\n You, (" + user.getUsername()
                         + ") submitted a request to change your password at " + time
                         + ". This request has been processed by our servers, and you may now log in using your new password.\n"
-                        + " If you did not request to change your password, please contact an administrator.\\n\\n--iTrust2 Ad"
+                        + " If you did not request to change your password, please contact an administrator.\n\n--iTrust2 Ad"
                         + "min";
                 EmailUtil.sendEmail( email, "iTrust2 Password Change", body );
 
