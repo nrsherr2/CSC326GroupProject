@@ -10,7 +10,6 @@ package edu.ncsu.csc.itrust2.models.enums;
  * representing the event.
  *
  * @author Kai Presler-Marshall
- * @author Vincent Renich
  *
  */
 public enum TransactionType {
@@ -247,23 +246,22 @@ public enum TransactionType {
      * HCP edits patient's demographics
      */
     PATIENT_DEMOGRAPHICS_EDIT ( 1201, "HCP edits patient's demographics", true ),
-
     /**
-     * Password change email notification sent
+     * PW Change Email notification sent
      */
-    EMAIL_ALERT_PASSWORD_CHANGE ( 1401, "PW Change Email notification sent", true ),
+    PASSWORD_CHANGE_SUCCESS_EMAIL_SENT ( 1401, "PW Change Email notification sent", true ),
     /**
-     * Appointment request change email notification sent
+     * AppointmentRequest Email notification sent
      */
-    EMAIL_ALERT_APPOINTMENT_REQUEST ( 1402, "AppointmentRequest Email notification sent", true ),
+    APPOINTMENT_REQUEST_EMAIL_SENT ( 1402, "AppointmentRequest Email notification sent", true ),
     /**
-     * Account lockout email notification sent
+     * Account Lockout Email notification sent
      */
-    EMAIL_ALERT_ACCOUNT_LOCKOUT ( 1403, "Account Lockout Email notification sent", true ),
+    ACCOUNT_LOCKOUT_EMAIL_SENT ( 1403, "Account Lockout Email notification sent", true ),
     /**
-     * Email notification could not be sent
+     * Email notification could not be sent due to missing email address
      */
-    EMAIL_ALERT_SEND_FAILURE ( 1404, "Email notification could not be sent due to missing email address", true );
+    MISSING_EMAIL_NOT_SENT ( 1404, "Email notification could not be sent due to missing email address", true );
 
     /**
      * Creates a TransactionType for logging events

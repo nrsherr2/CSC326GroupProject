@@ -165,10 +165,10 @@ public class APIAppointmentRequestController extends APIController {
                 EmailUtil.sendEmail( patientEmail, "Appointment Status Update",
                         "The status of your appointment request, id " + request.getId() + " on " + request.getDate()
                                 + " has been updated from " + requestF.getStatus() + " to " + request.getStatus() );
-                LoggerUtil.log( TransactionType.EMAIL_ALERT_APPOINTMENT_REQUEST, request.getPatient() );
+                LoggerUtil.log( TransactionType.APPOINTMENT_REQUEST_EMAIL_SENT, request.getPatient() );
             }
             catch ( final MessagingException e ) {
-                LoggerUtil.log( TransactionType.EMAIL_ALERT_SEND_FAILURE, request.getPatient() );
+                LoggerUtil.log( TransactionType.MISSING_EMAIL_NOT_SENT, request.getPatient() );
             }
             LoggerUtil.log( TransactionType.APPOINTMENT_REQUEST_UPDATED, request.getPatient(), request.getHcp() );
             return new ResponseEntity( request, HttpStatus.OK );
