@@ -162,6 +162,7 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
                         lock.save();
                         LoggerUtil.log( TransactionType.USER_LOCKOUT, username, null,
                                 username + " has been locked out for 1 hour." );
+
                         try {
                             String email = "";
                             String name = "";

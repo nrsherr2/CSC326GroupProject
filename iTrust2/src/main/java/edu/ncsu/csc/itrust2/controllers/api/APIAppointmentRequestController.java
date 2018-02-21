@@ -156,6 +156,7 @@ public class APIAppointmentRequestController extends APIController {
 
             request.save();
             LoggerUtil.log( TransactionType.APPOINTMENT_REQUEST_UPDATED, request.getPatient(), request.getHcp() );
+            // send an email notifying the user their appointment request was updated
             return new ResponseEntity( request, HttpStatus.OK );
         }
         catch ( final Exception e ) {
