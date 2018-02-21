@@ -2,7 +2,9 @@ package edu.ncsu.csc.itrust2.config;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,10 +16,13 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
+import edu.ncsu.csc.itrust2.models.persistent.LoginAttempt;
 import edu.ncsu.csc.itrust2.models.persistent.LoginBan;
 import edu.ncsu.csc.itrust2.models.persistent.LoginLockout;
-import edu.ncsu.csc.itrust2.models.persistent.LoginAttempt;
+import edu.ncsu.csc.itrust2.models.persistent.Patient;
+import edu.ncsu.csc.itrust2.models.persistent.Personnel;
 import edu.ncsu.csc.itrust2.models.persistent.User;
+import edu.ncsu.csc.itrust2.utils.EmailUtil;
 import edu.ncsu.csc.itrust2.utils.LoggerUtil;
 
 /**
@@ -63,6 +68,13 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
                     lockout.setTime( Calendar.getInstance() );
                     lockout.save();
                     LoggerUtil.log( TransactionType.IP_LOCKOUT, addr, null, addr + " has been locked out for 1 hour." );
+                    try {
+                        EmailUtil.sendEmail( "cameroncrazy13@gmail.com", "Error",
+                                "Hey dude, you're locked out. Get it together." );
+                    }
+                    catch ( final MessagingException e ) {
+                        e.printStackTrace();
+                    }
                     this.getRedirectStrategy().sendRedirect( request, response, "/login?iplocked" );
 
                 }
@@ -93,6 +105,53 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
                         ban.setUser( user );
                         ban.save();
                         LoggerUtil.log( TransactionType.USER_BANNED, username, null, username + " has been banned." );
+                        try {
+                            String email = "";
+                            String name = "";
+                            final List<Personnel> faculty = Personnel.getPersonnel();
+                            Personnel person = null;
+                            for ( int i = 0; i < faculty.size(); i++ ) {
+                                if ( faculty.get( i ).getSelf().getId().equals( ban.getUser().getId() ) ) {
+                                    person = faculty.get( i );
+                                    break;
+                                }
+                            }
+
+                            if ( person != null ) {
+                                email = person.getEmail();
+                                name = person.getFirstName();
+                            }
+                            else {
+                                Patient pat = null;
+                                final List<Patient> patientList = Patient.getPatients();
+                                for ( int i = 0; i < patientList.size(); i++ ) {
+                                    if ( patientList.get( i ).getSelf().getId().equals( ban.getUser().getId() ) ) {
+                                        pat = patientList.get( i );
+                                        break;
+                                    }
+                                }
+
+                                if ( pat != null ) {
+                                    email = pat.getEmail();
+                                    name = pat.getFirstName();
+                                }
+                                else {
+                                    try {
+                                        throw new Exception( "No patient or Personnel on file for " + ban.getId() );
+                                    }
+                                    catch ( final Exception e ) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            EmailUtil.sendEmail( email, "Error", "Hey " + name + ", you're banned. Tough luck." );
+                            LoggerUtil.log( TransactionType.ACCOUNT_LOCKOUT_EMAIL_SENT, username,
+                                    TransactionType.ACCOUNT_LOCKOUT_EMAIL_SENT.getDescription() );
+                        }
+                        catch ( final MessagingException e ) {
+                            e.printStackTrace();
+                        }
                         this.getRedirectStrategy().sendRedirect( request, response, "/login?banned" );
                     }
                     else {
@@ -103,7 +162,57 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
                         lock.save();
                         LoggerUtil.log( TransactionType.USER_LOCKOUT, username, null,
                                 username + " has been locked out for 1 hour." );
-                        //send an email notifying this person they were locked out
+
+                        try {
+                            String email = "";
+                            String name = "";
+                            final List<Personnel> faculty = Personnel.getPersonnel();
+                            Personnel person = null;
+                            for ( int i = 0; i < faculty.size(); i++ ) {
+                                if ( faculty.get( i ).getSelf().getId().equals( lock.getUser().getId() ) ) {
+                                    person = faculty.get( i );
+                                    break;
+                                }
+                            }
+
+                            if ( person != null ) {
+                                email = person.getEmail();
+                                name = person.getFirstName();
+                            }
+                            else {
+                                Patient pat = null;
+                                final List<Patient> patientList = Patient.getPatients();
+                                for ( int i = 0; i < patientList.size(); i++ ) {
+                                    if ( patientList.get( i ).getSelf().getId().equals( lock.getUser().getId() ) ) {
+                                        pat = patientList.get( i );
+                                        break;
+                                    }
+                                }
+
+                                if ( pat != null ) {
+                                    email = pat.getEmail();
+                                    name = pat.getFirstName();
+                                }
+                                else {
+                                    try {
+                                        LoggerUtil.log( TransactionType.MISSING_EMAIL_NOT_SENT, username,
+                                                TransactionType.MISSING_EMAIL_NOT_SENT.getDescription() );
+                                        throw new Exception( "No patient or Personnel on file for " + lock.getId() );
+                                    }
+                                    catch ( final Exception e ) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            EmailUtil.sendEmail( email, "Error",
+                                    "Hey " + name + ", you're locked out. Get it together." );
+                            LoggerUtil.log( TransactionType.ACCOUNT_LOCKOUT_EMAIL_SENT, username,
+                                    TransactionType.ACCOUNT_LOCKOUT_EMAIL_SENT.getDescription() );
+                        }
+                        catch ( final MessagingException e ) {
+                            e.printStackTrace();
+                        }
                         this.getRedirectStrategy().sendRedirect( request, response, "/login?locked" );
                     }
                     return;
