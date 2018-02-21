@@ -21,7 +21,7 @@ import edu.ncsu.csc.itrust2.models.persistent.LoginAttempt;
 public class LockoutStepDefs {
     private final WebDriver driver  = new HtmlUnitDriver( true );
     private final String    baseUrl = "http://localhost:8080/iTrust2";
-    WebDriverWait           wait    = new WebDriverWait( driver, 2 );
+    WebDriverWait           wait    = new WebDriverWait( driver, 20 );
 
     @Given ( "The user (.+) with password (.+) and the current machine have no failed login attempts" )
     public void clearAttempts ( final String username, final String correct ) {
