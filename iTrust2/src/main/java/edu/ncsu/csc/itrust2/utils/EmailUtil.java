@@ -24,7 +24,7 @@ public class EmailUtil {
     /**
      * Send an email from the email account in the system's `email.properties`
      * file
-     * 
+     *
      * @param addr
      *            Address to send to
      * @param subject
