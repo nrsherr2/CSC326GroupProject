@@ -53,7 +53,7 @@ public class EmailUtil {
             input = new FileInputStream( filename );
         }
         catch ( final IOException e ) {
-            // meh
+            e.printStackTrace();
         }
         if ( null != input ) {
             try {
