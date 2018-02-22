@@ -16,6 +16,8 @@ import edu.ncsu.csc.itrust2.forms.patient.AppointmentRequestForm;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
 import edu.ncsu.csc.itrust2.models.persistent.AppointmentRequest;
 import edu.ncsu.csc.itrust2.models.persistent.DomainObject;
+import edu.ncsu.csc.itrust2.models.persistent.Patient;
+import edu.ncsu.csc.itrust2.utils.EmailUtil;
 import edu.ncsu.csc.itrust2.utils.LoggerUtil;
 
 /**
@@ -24,6 +26,7 @@ import edu.ncsu.csc.itrust2.utils.LoggerUtil;
  * is the primary key of the appointment request in question
  *
  * @author Kai Presler-Marshall
+ * @author Vincent Renich
  *
  */
 @RestController
@@ -155,7 +158,21 @@ public class APIAppointmentRequestController extends APIController {
             }
 
             request.save();
+            try {
+                final String patientEmail = Patient.getPatient( request.getPatient() ).getEmail();
+                EmailUtil.sendEmail( patientEmail, "Appointment Status Update",
+                        "The status of your appointment request, id " + request.getId() + " on " + request.getDate()
+                                + " has been updated from " + requestF.getStatus() + " to " + request.getStatus() );
+                LoggerUtil.log( TransactionType.APPOINTMENT_REQUEST_EMAIL_SENT, request.getPatient() );
+            }
+            catch ( final Exception e ) {
+                LoggerUtil.log( TransactionType.MISSING_EMAIL_NOT_SENT, request.getPatient() );
+//                return new ResponseEntity(
+//                        errorResponse( "Could not update " + requestF.toString() + " because of " + e.getMessage() ),
+//                        HttpStatus.BAD_REQUEST  );
+            }
             LoggerUtil.log( TransactionType.APPOINTMENT_REQUEST_UPDATED, request.getPatient(), request.getHcp() );
+            // send an email notifying the user their appointment request was updated
             return new ResponseEntity( request, HttpStatus.OK );
         }
         catch ( final Exception e ) {

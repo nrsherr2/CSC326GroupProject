@@ -1,5 +1,6 @@
 package edu.ncsu.csc.itrust2.utils;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -24,7 +25,7 @@ public class EmailUtil {
     /**
      * Send an email from the email account in the system's `email.properties`
      * file
-     * 
+     *
      * @param addr
      *            Address to send to
      * @param subject
@@ -47,8 +48,13 @@ public class EmailUtil {
 
         final Properties properties = new Properties();
 
-        final String filename = "email.properties";
-        input = DBUtil.class.getClassLoader().getResourceAsStream( filename );
+        final String filename = "src/main/java/email.properties";
+        try {
+            input = new FileInputStream( filename );
+        }
+        catch ( final IOException e ) {
+            e.printStackTrace();
+        }
         if ( null != input ) {
             try {
                 properties.load( input );
