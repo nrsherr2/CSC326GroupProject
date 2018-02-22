@@ -45,6 +45,12 @@ public class UserController {
         return "/personnel/editDemographics";
     }
 
+    @GetMapping(value = "personnel/viewAccessLog")
+    @PreAuthorize("hasRole('ROLE_HCP') or hasRole('ROLE_ADMIN')")
+    public String viewAccessLog(final Model model) {
+        return "/personnel/editDemographics";
+    }
+    
     /**
      * Controller for iTrust2 personnel to edit their demographics. This is the
      * submit action.
