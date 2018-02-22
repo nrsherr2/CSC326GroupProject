@@ -167,8 +167,11 @@ public class APIAppointmentRequestController extends APIController {
                                 + " has been updated from " + requestF.getStatus() + " to " + request.getStatus() );
                 LoggerUtil.log( TransactionType.APPOINTMENT_REQUEST_EMAIL_SENT, request.getPatient() );
             }
-            catch ( final MessagingException e ) {
+            catch ( final Exception e ) {
                 LoggerUtil.log( TransactionType.MISSING_EMAIL_NOT_SENT, request.getPatient() );
+//                return new ResponseEntity(
+//                        errorResponse( "Could not update " + requestF.toString() + " because of " + e.getMessage() ),
+//                        HttpStatus.BAD_REQUEST  );
             }
             LoggerUtil.log( TransactionType.APPOINTMENT_REQUEST_UPDATED, request.getPatient(), request.getHcp() );
             // send an email notifying the user their appointment request was updated
