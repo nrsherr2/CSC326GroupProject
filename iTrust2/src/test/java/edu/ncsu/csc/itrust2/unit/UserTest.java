@@ -49,4 +49,42 @@ public class UserTest {
         assertTrue( u1.equals( u2 ) );
     }
 
+    /**
+     * Tests equals comparison of two user objects
+     */
+    @Test
+    public void TestFullEquals () {
+        User u1 = new User();
+        User u2 = new User();
+        u2.setEnabled( 1 );
+        u2.hashCode();
+        assertFalse( u1.equals( u2 ) );
+        u1.setEnabled( 0 );
+        assertFalse( u1.equals( u2 ) );
+
+        u1 = new User();
+        u2 = new User();
+        u2.setPassword( "asdf" );
+        u2.hashCode();
+        assertFalse( u1.equals( u2 ) );
+        u1.setPassword( "wrong" );
+        assertFalse( u1.equals( u2 ) );
+
+        u1 = new User();
+        u2 = new User();
+        u2.setRole( Role.ROLE_ADMIN );
+        u2.hashCode();
+        assertFalse( u1.equals( u2 ) );
+        u1.setRole( Role.ROLE_HCP );
+        assertFalse( u1.equals( u2 ) );
+
+        u1 = new User();
+        u2 = new User();
+        u2.setUsername( "yoo-zur-naym" );
+        u2.hashCode();
+        assertFalse( u1.equals( u2 ) );
+        u1.setUsername( "loo-zur-naym" );
+        assertFalse( u1.equals( u2 ) );
+    }
+
 }
