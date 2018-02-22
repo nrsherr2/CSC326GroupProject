@@ -32,7 +32,7 @@ public class UserController {
      * are added to the system
      *
      * @param model
-     *            information about the vidw
+     *            information about the view
      * @return response
      */
     @GetMapping ( value = "personnel/editDemographics" )
@@ -45,10 +45,16 @@ public class UserController {
         return "/personnel/editDemographics";
     }
 
+    /**
+     * Controller that allows iTrust2 personnel to view the access log
+     * all personnel can see the same page
+     * @param model information about the view
+     * @return the html page for the access log
+     */
     @GetMapping(value = "personnel/viewAccessLog")
     @PreAuthorize("hasRole('ROLE_HCP') or hasRole('ROLE_ADMIN')")
     public String viewAccessLog(final Model model) {
-        return "/personnel/editDemographics";
+        return "/personnel/viewAccessLog";
     }
     
     /**
