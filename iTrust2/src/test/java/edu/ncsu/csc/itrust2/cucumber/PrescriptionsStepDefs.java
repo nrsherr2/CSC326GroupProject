@@ -1,7 +1,6 @@
 package edu.ncsu.csc.itrust2.cucumber;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.util.Calendar;
 import java.util.List;
@@ -148,7 +147,7 @@ public class PrescriptionsStepDefs {
                 final String thisEndDateString = ( thisEndDate.get( Calendar.MONTH ) + 1 ) + "/"
                         + thisEndDate.get( Calendar.DAY_OF_MONTH ) + "/" + thisEndDate.get( Calendar.YEAR );
                 final String thisRenewals = p.getRenewals() + "";
-                if ( p.getDrug().getName().equals( drug ) && ( "" + p.getDosage() ).equals( dosage )
+                if ( thisName.equals( drug ) && thisDosage.equals( dosage )
                         && ( thisStartDateString.equals( startDate ) ) && ( thisEndDateString.equals( endDate ) )
                         && thisRenewals.equals( renewals ) ) {
                     retrievedPrescription = p;
@@ -156,11 +155,11 @@ public class PrescriptionsStepDefs {
                 }
             }
             catch ( final Exception e ) {
-                // ignore
+                e.printStackTrace();
             }
         }
 
-        assertNotNull( retrievedPrescription );
+        assertEquals( drug, retrievedPrescription.getDrug().getName() );
     }
 
     @When ( "I choose to add a new drug" )
