@@ -178,9 +178,8 @@ public class PrescriptionsStepDefs {
 
     @Then ( "the drug (.+) is successfully added to the system" )
     public void drugSuccessful ( final String drug ) {
-        final Drug retrievedDrug = (Drug) Drug.getBy( Drug.class, "name", drug );
-
-        assertNotNull( retrievedDrug );
+        wait.until( ExpectedConditions.textToBePresentInElementLocated( By.tagName( "body" ), drug ) );
+        assertEquals( "", driver.findElement( By.id( "errP" ) ).getText() );
 
         for ( final WebElement r : driver.findElements( By.name( "drugTableRow" ) ) ) {
             if ( r.getText().contains( drug ) ) {
