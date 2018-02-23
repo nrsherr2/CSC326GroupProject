@@ -1,7 +1,9 @@
 package edu.ncsu.csc.itrust2.cucumber;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -17,6 +19,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import edu.ncsu.csc.itrust2.models.persistent.Drug;
 import edu.ncsu.csc.itrust2.models.persistent.Hospital;
+import edu.ncsu.csc.itrust2.models.persistent.Prescription;
 
 public class PrescriptionsStepDefs {
 
@@ -132,22 +135,32 @@ public class PrescriptionsStepDefs {
     @Then ( "I see a prescription for (.+) with a dosage of (.+) starting on (.+) and ending on (.+) with (.+) renewals" )
     public void prescriptionVisible ( final String drug, final String dosage, final String startDate,
             final String endDate, final String renewals ) {
-        wait.until( ExpectedConditions.textToBePresentInElementLocated( By.tagName( "body" ), drug ) );
-        final List<WebElement> rows = driver.findElements( By.name( "prescriptionTableRow" ) );
-
-        List<WebElement> data = null;
-        for ( final WebElement r : rows ) {
-            if ( r.getText().contains( drug ) ) {
-                data = r.findElements( By.tagName( "td" ) );
-                break;
+        final List<Prescription> prescriptionList = Prescription.getPrescriptions();
+        Prescription retrievedPrescription = null;
+        for ( final Prescription p : prescriptionList ) {
+            try {
+                final String thisName = p.getDrug().getName();
+                final String thisDosage = p.getDosage() + "";
+                final Calendar thisStartDate = p.getStartDate();
+                final String thisStartDateString = ( thisStartDate.get( Calendar.MONTH ) + 1 ) + "/"
+                        + thisStartDate.get( Calendar.DAY_OF_MONTH ) + "/" + thisStartDate.get( Calendar.YEAR );
+                final Calendar thisEndDate = p.getEndDate();
+                final String thisEndDateString = ( thisEndDate.get( Calendar.MONTH ) + 1 ) + "/"
+                        + thisEndDate.get( Calendar.DAY_OF_MONTH ) + "/" + thisEndDate.get( Calendar.YEAR );
+                final String thisRenewals = p.getRenewals() + "";
+                if ( p.getDrug().getName().equals( drug ) && ( "" + p.getDosage() ).equals( dosage )
+                        && ( thisStartDateString.equals( startDate ) ) && ( thisEndDateString.equals( endDate ) )
+                        && thisRenewals.equals( renewals ) ) {
+                    retrievedPrescription = p;
+                    break;
+                }
+            }
+            catch ( final Exception e ) {
+                // ignore
             }
         }
 
-        assertEquals( drug, data.get( 0 ).getText() );
-        assertEquals( dosage, data.get( 1 ).getText() );
-        assertEquals( startDate, data.get( 2 ).getText() );
-        assertEquals( endDate, data.get( 3 ).getText() );
-        assertEquals( renewals, data.get( 4 ).getText() );
+        assertNotNull( retrievedPrescription );
     }
 
     @When ( "I choose to add a new drug" )
@@ -165,8 +178,9 @@ public class PrescriptionsStepDefs {
 
     @Then ( "the drug (.+) is successfully added to the system" )
     public void drugSuccessful ( final String drug ) {
-        wait.until( ExpectedConditions.textToBePresentInElementLocated( By.tagName( "body" ), drug ) );
-        assertEquals( "", driver.findElement( By.id( "errP" ) ).getText() );
+        final Drug retrievedDrug = (Drug) Drug.getBy( Drug.class, "name", drug );
+
+        assertNotNull( retrievedDrug );
 
         for ( final WebElement r : driver.findElements( By.name( "drugTableRow" ) ) ) {
             if ( r.getText().contains( drug ) ) {
