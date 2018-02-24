@@ -1,10 +1,73 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:include="layout :: head(title=~{::title},links=~{})">
 <title>Patient Home</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 </head>
 <body th:include="layout :: body" th:with="content=~{::content}">
 	<div th:fragment="content">
 		<h1>Welcome to iTrust2 - Patient</h1>
+		
+		<script th:inline="javascript">
+            	/* Otherwise Thymeleaf tries to parse Javascript as XML and breaks itself sometimes.  Sigh */
+            	/*<![CDATA[*/
+            	var app = angular.module('viewLogsApp', []);
+            	app.controller('viewLogsCtrl', function ($scope, $http) {
+            		$scope.current = "";
+
+            		
+	                $scope.logs = [];
+	                function loadTable () {
+        	        	$http.get("/iTrust2/api/v1/logentries/" + "patient"/*$scope.current*/).then(			/* change to correct title/page and link to specific user */
+            	        	function (response) {
+                	    		$scope.logs = response.data;
+                	    		console.log('printing here');
+                    		}, function (rejection) {
+                    			$scope.logs = [];
+                    			console.log('printing there');
+                    		}
+                    	);
+                	}
+    	            
+	                //getCurrentUser();
+    	            loadTable();
+            	});
+                    /*]]>*/
+            </script>
+		
+		<div ng-app="viewLogsApp" ng-controller="viewLogsCtrl">
+      			<div class="container">
+        			<div class="row">
+          				<div class="col-md-12">
+            				<div class="panel panel-primary">
+              					<div class="panel-heading">
+                					<h3>Access Logs for patient</h3>	<!-- {{current}}-->
+              					</div>
+              					<div class="panel-body">
+                					<table class="table table-bordered">
+                  						<thead>
+                    						<tr>
+                      							<th>Accessor</th>
+                      							<th>Accessor Role</th>
+                      							<th>Date/Time</th>
+                      							<th>Transaction Type</th>
+                    						</tr>
+                  						</thead>
+                  						<tbody>
+                    						<tr name="logRows" ng-repeat="l in logs">
+                    							<td>{{l.accessor}}</td>
+                    							<td>{{l.accessorRole}}</td>
+                    							<td>{{l.dateandtime}}</td>
+                    							<td>{{l.transType}}</td>
+                    						</tr>
+                  						</tbody>
+                					</table>
+                				</div>
+                			</div>
+                		</div>
+                	</div>
+                </div>
+            </div>   
 	</div>
 </body>
 </html>
