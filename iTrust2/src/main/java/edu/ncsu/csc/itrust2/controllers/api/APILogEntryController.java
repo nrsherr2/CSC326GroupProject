@@ -1,7 +1,15 @@
 package edu.ncsu.csc.itrust2.controllers.api;
 
+
 import java.util.ArrayList;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -79,6 +87,43 @@ public class APILogEntryController extends APIController {
         return dataList;
     }
     // ***** Above is from Cameron's edits ***** //
+
+    /**
+     * Retrieves and returns a List of LogEntries for a user by date range
+     *
+     * @param startDate
+     *            The beginning of the date range for the list of LogEntries,
+     *            inclusive
+     * @param endDate
+     *            The end of the date range for the list of LogEntries,
+     *            inclusive
+     * @return the List of LogEntries for the user within the date range
+     */
+    @GetMapping ( BASE_PATH + "/logentriesrange/{startDate}/{endDate}" )
+    public List<LogEntry> getEntriesinRange ( @PathVariable ( "startDate" ) final String startDate,
+            @PathVariable ( "endDate" ) final String endDate ) {
+        final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy", Locale.ENGLISH );
+        Date parsedDate = null;
+        try {
+            parsedDate = sdf.parse( startDate );
+        }
+        catch ( final ParseException e ) {
+            // Ignore, Hibernate will catch the null date
+        }
+        final Calendar beginCalendar = Calendar.getInstance();
+        beginCalendar.setTime( parsedDate );
+        try {
+            parsedDate = sdf.parse( startDate );
+        }
+        catch ( final ParseException e ) {
+            // Ignore, Hibernate will catch the null date
+        }
+        final Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime( parsedDate );
+        endCalendar.add( Calendar.DAY_OF_MONTH, 1 );
+        return LoggerUtil.getForUserInDateRange( User.getByName( LoggerUtil.currentUser() ), beginCalendar,
+                endCalendar );
+    }
 
     /**
      * Retrieves and returns a specific log entry specified by the id provided.
