@@ -30,7 +30,7 @@ public class PrescriptionsStepDefs {
     private final WebDriver     driver    = new HtmlUnitDriver( true );
     private final String        baseUrl   = "http://localhost:8080/iTrust2";
 
-    WebDriverWait               wait      = new WebDriverWait( driver, 15 );
+    WebDriverWait               wait      = new WebDriverWait( driver, 40 );
 
     @Before
     public void setup () {
