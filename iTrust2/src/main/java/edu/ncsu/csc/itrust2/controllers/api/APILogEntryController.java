@@ -156,8 +156,7 @@ public class APILogEntryController extends APIController {
         final Calendar endCalendar = Calendar.getInstance();
         endCalendar.setTime( parsedDate );
         endCalendar.add( Calendar.DAY_OF_MONTH, 1 );
-        final List<LogEntry> logList = LoggerUtil.getForUserInDateRange( User.getByName( LoggerUtil.currentUser() ),
-                beginCalendar, endCalendar );
+        final List<LogEntry> logList = LoggerUtil.getForUserInDateRange( user, beginCalendar, endCalendar );
         final List<AccessLogData> dataList = new ArrayList<AccessLogData>();
 
         for ( int i = 0; i < logList.size(); i++ ) {

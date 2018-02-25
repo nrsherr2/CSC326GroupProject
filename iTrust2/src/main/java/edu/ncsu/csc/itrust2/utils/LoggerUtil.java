@@ -106,16 +106,16 @@ public class LoggerUtil {
      * Retrieve the Log Entries for a given user, between the given dates
      *
      * @param user
-     *            The User to retrieve log entries for
+     *            The username of the user to retrieve log entries for
      * @param beginDate
      *            the start date for the list of log entries to get, inclusive
      * @param endDate
      *            the end date for the list of log entries to get, exclusive
      * @return The List of Log Entries that was found
      */
-    static public List<LogEntry> getForUserInDateRange ( final User user, final Calendar beginDate,
+    static public List<LogEntry> getForUserInDateRange ( final String user, final Calendar beginDate,
             final Calendar endDate ) {
-        final List<LogEntry> allLogs = getAllForUser( user.getUsername() );
+        final List<LogEntry> allLogs = getAllForUser( user );
         final List<LogEntry> requestedLogs = new ArrayList<LogEntry>();
         for ( final LogEntry log : allLogs ) {
             if ( log.getTime().after( beginDate ) && log.getTime().before( endDate ) ) {
