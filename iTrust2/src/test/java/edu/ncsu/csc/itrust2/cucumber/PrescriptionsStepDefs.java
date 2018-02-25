@@ -30,18 +30,14 @@ public class PrescriptionsStepDefs {
     private final WebDriver     driver    = new HtmlUnitDriver( true );
     private final String        baseUrl   = "http://localhost:8080/iTrust2";
 
-    WebDriverWait               wait      = new WebDriverWait( driver, 40 );
+    WebDriverWait               wait      = new WebDriverWait( driver, 100 );
 
     @Before
     public void setup () {
         final Hospital hosp = new Hospital( "General Hospital", "123 Main St", "12345", "NC" );
         hosp.save();
 
-        final Drug d = new Drug();
-        d.setCode( "1000-0001-10" );
-        d.setName( "Quetiane Fumarate" );
-        d.setDescription( "atypical antipsychotic and antidepressant" );
-        d.save();
+        
     }
 
     private String getUserName ( final String first, final String last ) {
@@ -68,6 +64,11 @@ public class PrescriptionsStepDefs {
 
     @Given ( "I have logged in with username: (.+)" )
     public void login ( final String username ) {
+        final Drug d = new Drug();
+        d.setCode( "1000-0001-10" );
+        d.setName( "Quetiane Fumarate" );
+        d.setDescription( "atypical antipsychotic and antidepressant" );
+        d.save();
         driver.get( baseUrl );
 
         enterValue( "username", username );
@@ -124,6 +125,8 @@ public class PrescriptionsStepDefs {
     public void officeVisitSuccessful () {
         final WebElement msg = driver.findElement( By.name( "success" ) );
         assertEquals( "Office visit created successfully", msg.getText() );
+        final Drug d = Drug.getByCode( "1000-0001-10" );
+        d.delete();
     }
 
     @When ( "I choose to view my prescriptions" )
@@ -160,6 +163,8 @@ public class PrescriptionsStepDefs {
         }
 
         assertEquals( drug, retrievedPrescription.getDrug().getName() );
+        final Drug d = Drug.getByCode( "1000-0001-10" );
+        d.delete();
     }
 
     @When ( "I choose to add a new drug" )
@@ -168,11 +173,12 @@ public class PrescriptionsStepDefs {
     }
 
     @When ( "submit the values for NDC (.+), name (.+), and description (.*)" )
-    public void submitDrug ( final String ndc, final String name, final String description ) {
+    public void submitDrug ( final String ndc, final String name, final String description ) throws Exception {
         enterValue( "drug", name );
         enterValue( "code", ndc );
         enterValue( "description", description );
         driver.findElement( By.name( "submit" ) ).click();
+        Thread.sleep( 5 );
     }
 
     @Then ( "the drug (.+) is successfully added to the system" )
