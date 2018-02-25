@@ -42,11 +42,9 @@ public class APIUserController extends APIController {
     private static final String ROLE_HCP     = "ROLE_HCP";
 
     /**
-     * Retrieves and returns a list of all Users in the system, regardless of
-     * their classification (including all Patients, all Personnel, and all
-     * users who do not have a further status specified)
+     * Retrieves and returns a list of the current user logged into the system
      *
-     * @return list of users
+     * @return list of the current user
      */
     @GetMapping ( BASE_PATH + "/currentuser" )
     public List<String> getCurrentUser () {
