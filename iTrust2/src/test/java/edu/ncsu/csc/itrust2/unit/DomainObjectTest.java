@@ -15,6 +15,9 @@ import org.hibernate.TransientObjectException;
 import org.junit.Test;
 
 import edu.ncsu.csc.itrust2.forms.hcp.OfficeVisitForm;
+import edu.ncsu.csc.itrust2.models.enums.BloodType;
+import edu.ncsu.csc.itrust2.models.enums.Ethnicity;
+import edu.ncsu.csc.itrust2.models.enums.Gender;
 import edu.ncsu.csc.itrust2.models.enums.HouseholdSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.Role;
@@ -200,14 +203,33 @@ public class DomainObjectTest {
 
     @Test
     public void testOfficeVisit () throws NumberFormatException, ParseException {
-        final User patti = new User( "pusn", "ppwd", Role.ROLE_PATIENT, 1 );
+        final User patti = new User( "patient", "ppwd", Role.ROLE_PATIENT, 1 );
         final User hcpuser = new User( "husn", "hpwd", Role.ROLE_HCP, 1 );
 
-        Calendar.getInstance().set( 1997, Calendar.JULY, 2, 16, 43 );
         final Calendar dob = Calendar.getInstance();
+        dob.set( 1997, Calendar.JULY, 2, 16, 43 );
 
         final Patient p = new Patient( patti );
         p.setDateOfBirth( dob );
+        p.setAddress1( "101 Address Court" );
+        p.setAddress2( "P.O. Box 202" );
+        p.setBloodType( BloodType.ABPos );
+        p.setCauseOfDeath( "iTrust2" );
+        p.setCity( "MyCity" );
+
+        p.setEmail( "csc326.gps2018.g4@gmail.com" );
+        p.setEthnicity( Ethnicity.AfricanAmerican );
+        p.setFather( new User() );
+        p.setFirstName( "Firstname" );
+        p.setGender( Gender.NotSpecified );
+        p.setId( 12345L );
+        p.setLastName( "Lastname" );
+        p.setMother( new User() );
+        p.setPhone( "919-555-5555" );
+        p.setPreferredName( "Preferredname" );
+        p.setSelf( new User() );
+        p.setState( State.NC );
+        p.setZip( "27606" );
 
         Calendar.getInstance().set( 2018, Calendar.FEBRUARY, 14, 15, 9 );
         final OfficeVisit visit = new OfficeVisit();
@@ -243,7 +265,42 @@ public class DomainObjectTest {
             // empty catch
         }
 
-        assertEquals( "pusn", visit.getPatient().getUsername() );
+        final OfficeVisitForm myform = new OfficeVisitForm( visit );
+
+        assertEquals( "patient", visit.getPatient().getUsername() );
+        assertEquals( "patient", patti.getUsername() );
+        assertFalse( myform.equals( form ) );
+
+        assertEquals( patti.getUsername(), myform.getPatient() );
+
+        try {
+            final OfficeVisit newVisit = new OfficeVisit( myform );
+        }
+        catch ( final Exception e ) {
+            assertNotNull( e.getMessage() );
+        }
+
+        myform.setPreScheduled( null );
+        try {
+            final OfficeVisit newVisit = new OfficeVisit( myform );
+            assertFalse( newVisit.equals( visit ) );
+        }
+        catch ( final Exception e ) {
+            assertEquals( null, myform.getPreScheduled() );
+        }
+
+        myform.setDiagnoses( null );
+        try {
+            final OfficeVisit newVisit = new OfficeVisit( myform );
+            assertEquals( myform.getPatient(), newVisit.getPatient().getUsername() );
+            User u = newVisit.getPatient();
+            u = User.getByNameAndRole( u.getUsername(), Role.ROLE_PATIENT );
+            assertFalse( newVisit.equals( visit ) );
+        }
+        catch ( final Exception e ) {
+            assertEquals( null, myform.getDiagnoses() );
+        }
+
     }
 
 }
