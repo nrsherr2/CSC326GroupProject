@@ -15,6 +15,17 @@
             	app.controller('viewLogsCtrl', function ($scope, $http) {
             		$scope.current = "";
 
+            		function getCurrentUser () {
+            			$http.get("/iTrust2/api/v1/currentuser").then(
+            				function (response) {
+            					$scope.current = response.data[0];
+            					console.log('please print here' + $scope.current);
+            				}, function (rejection) {
+            					$scope.current = "oh darn";
+            					console.log('please don\'t print here');
+            				}
+            			);
+            		}
             		
 	                $scope.logs = [];
 	                function loadTable () {
@@ -29,7 +40,7 @@
                     	);
                 	}
     	            
-	                //getCurrentUser();
+	                getCurrentUser();
     	            loadTable();
             	});
                     /*]]>*/
@@ -41,7 +52,7 @@
           				<div class="col-md-12">
             				<div class="panel panel-primary">
               					<div class="panel-heading">
-                					<h3>Access Logs for patient</h3>	<!-- {{current}}-->
+                					<h3>Access Logs for {{current}}</h3>	<!-- {{current}}-->
               					</div>
               					<div class="panel-body">
                 					<table class="table table-bordered">

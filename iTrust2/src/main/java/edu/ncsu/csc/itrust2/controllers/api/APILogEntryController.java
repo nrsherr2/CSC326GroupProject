@@ -1,12 +1,10 @@
 package edu.ncsu.csc.itrust2.controllers.api;
 
-import java.util.ArrayList;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-
 import java.util.List;
 import java.util.Locale;
 
@@ -46,7 +44,7 @@ public class APILogEntryController extends APIController {
     // ***** Below is what Cameron editted ***** //
     /**
      * Retrieves and returns a List of all LogEntries in the system for a given
-     * user
+     * user, as AccessLogData
      *
      * @param username
      *            the name of the current user
@@ -73,11 +71,14 @@ public class APILogEntryController extends APIController {
         final List<AccessLogData> dataList = new ArrayList<AccessLogData>();
 
         for ( int i = 0; i < userLog.size(); i++ ) {
-            final String accessor = user; // username
-            String role = User.getByName( user /* username */ ).getRole().getLanding().split( "," )[0];
-            final String first = role.substring( 0, 1 ).toUpperCase();
-            role = role.split( "/" )[0];
-            role = first + role.substring( 1 );
+            final String accessor = userLog.get( i ).getPrimaryUser(); // username
+            String role = "Self";
+            if ( !accessor.equals( user ) ) {
+                role = User.getByName( accessor /* username */ ).getRole().getLanding().split( "," )[0];
+                final String first = role.substring( 0, 1 ).toUpperCase();
+                role = role.split( "/" )[0];
+                role = first + role.substring( 1 );
+            }
             final String date = userLog.get( i ).getTime().getTime().toString();
             final String type = userLog.get( i ).getLogCode().getDescription();
 
@@ -89,6 +90,12 @@ public class APILogEntryController extends APIController {
     }
 
     // ***** Above is from Cameron's edits ***** //
+    /**
+     * Retrieves and returns a list of the top ten log entries for a user, as
+     * AccessLogData
+     *
+     * @return the list of the top ten log entries for the user
+     */
     @GetMapping ( BASE_PATH + "/logentries/patient10" ) // {username} instead of
     // patient
     public List<AccessLogData> getTop10ForPatient () {
@@ -102,13 +109,16 @@ public class APILogEntryController extends APIController {
         }
 
         final List<AccessLogData> dataList = new ArrayList<AccessLogData>();
-        int listSize = userLog.size() < 10 ? userLog.size() : 10;
+        final int listSize = userLog.size() < 10 ? userLog.size() : 10;
         for ( int i = 0; i < listSize; i++ ) {
-            final String accessor = user; // username
-            String role = User.getByName( user /* username */ ).getRole().getLanding().split( "," )[0];
-            final String first = role.substring( 0, 1 ).toUpperCase();
-            role = role.split( "/" )[0];
-            role = first + role.substring( 1 );
+            final String accessor = userLog.get( i ).getPrimaryUser(); // username
+            String role = "Self";
+            if ( !accessor.equals( user ) ) {
+                role = User.getByName( accessor /* username */ ).getRole().getLanding().split( "," )[0];
+                final String first = role.substring( 0, 1 ).toUpperCase();
+                role = role.split( "/" )[0];
+                role = first + role.substring( 1 );
+            }
             final String date = userLog.get( i ).getTime().getTime().toString();
             final String type = userLog.get( i ).getLogCode().getDescription();
 
@@ -120,7 +130,8 @@ public class APILogEntryController extends APIController {
     }
 
     /**
-     * Retrieves and returns a List of LogEntries for a user by date range
+     * Retrieves and returns a list of log entries for a user by date range, as
+     * AccessLogData
      *
      * @param startDate
      *            The beginning of the date range for the list of LogEntries,
@@ -128,12 +139,14 @@ public class APILogEntryController extends APIController {
      * @param endDate
      *            The end of the date range for the list of LogEntries,
      *            inclusive
-     * @return the List of LogEntries for the user within the date range
+     * @return the list of log entries for the user within the date range
      */
-    @GetMapping ( BASE_PATH + "/logentriesrange/{startDate}/{endDate}" )
-    public List<LogEntry> getEntriesinRange ( @PathVariable ( "startDate" ) final String startDate,
+    @GetMapping ( BASE_PATH + "/logentriesrange/{startDate}/{endDate}/" )
+    public List<AccessLogData> getEntriesinRange ( @PathVariable ( "startDate" ) final String startDate,
             @PathVariable ( "endDate" ) final String endDate ) {
-        final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy", Locale.ENGLISH );
+        final String user = LoggerUtil.currentUser();
+        LoggerUtil.log( TransactionType.VIEW_LOG_EVENTS, user );
+        final SimpleDateFormat sdf = new SimpleDateFormat( "MM.dd.yyyy", Locale.ENGLISH );
         Date parsedDate = null;
         try {
             parsedDate = sdf.parse( startDate );
@@ -144,7 +157,7 @@ public class APILogEntryController extends APIController {
         final Calendar beginCalendar = Calendar.getInstance();
         beginCalendar.setTime( parsedDate );
         try {
-            parsedDate = sdf.parse( startDate );
+            parsedDate = sdf.parse( endDate );
         }
         catch ( final ParseException e ) {
             // Ignore, Hibernate will catch the null date
@@ -152,8 +165,27 @@ public class APILogEntryController extends APIController {
         final Calendar endCalendar = Calendar.getInstance();
         endCalendar.setTime( parsedDate );
         endCalendar.add( Calendar.DAY_OF_MONTH, 1 );
-        return LoggerUtil.getForUserInDateRange( User.getByName( LoggerUtil.currentUser() ), beginCalendar,
-                endCalendar );
+        final List<LogEntry> logList = LoggerUtil.getForUserInDateRange( User.getByName( LoggerUtil.currentUser() ),
+                beginCalendar, endCalendar );
+        final List<AccessLogData> dataList = new ArrayList<AccessLogData>();
+
+        for ( int i = 0; i < logList.size(); i++ ) {
+            final String accessor = logList.get( i ).getPrimaryUser(); // username
+            String role = "Self";
+            if ( !accessor.equals( user ) ) {
+                role = User.getByName( accessor /* username */ ).getRole().getLanding().split( "," )[0];
+                final String first = role.substring( 0, 1 ).toUpperCase();
+                role = role.split( "/" )[0];
+                role = first + role.substring( 1 );
+            }
+            final String date = logList.get( i ).getTime().getTime().toString();
+            final String type = logList.get( i ).getLogCode().getDescription();
+
+            final AccessLogData data = new AccessLogData( accessor, role, date, type );
+            dataList.add( data );
+        }
+
+        return dataList;
     }
 
     /**
