@@ -18,7 +18,7 @@
             		
 	                $scope.logs = [];
 	                function loadTable () {
-        	        	$http.get("/iTrust2/api/v1/logentries/" + "patient"/*$scope.current*/).then(			/* change to correct title/page and link to specific user */
+        	        	$http.get("/iTrust2/api/v1/logentries/" + "patient10"/*$scope.current*/).then(			/* change to correct title/page and link to specific user */
             	        	function (response) {
                 	    		$scope.logs = response.data;
                 	    		console.log('printing here');
