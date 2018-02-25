@@ -23,22 +23,22 @@ public class EmailFunctionalityTest {
      * Tests sending the email we will revisit this later.
      */
 
-//    @Test
-//    public void testSendEmail () {
-//        final String destination = "csc326.gps2018.g4@gmail.com";
-//        final String subject = "test " + new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" ).format( new Date() );
-//        final String body = getMessage();
-//        try {
-//            EmailUtil.sendEmail( destination, subject, body );
-//            System.out.println(
-//                    "If you are in the GP-201-4 group or have access to their throwaway email, check that email's inbox to see if they got that message." );
-//            System.out.println(
-//                    "If you are a group that came after us, change the destination field to whatever email you want to send it to" );
-//        }
-//        catch ( final MessagingException e ) {
-//            Assert.fail( "Something went wrong when sending email" + e.getMessage() );
-//        }
-//    }
+    @Test
+    public void testSendEmail () {
+        final String destination = "csc326.gps2018.g4@gmail.com";
+        final String subject = "test " + new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" ).format( new Date() );
+        final String body = getMessage();
+        try {
+            EmailUtil.sendEmail( destination, subject, body );
+            System.out.println(
+                    "If you are in the GP-201-4 group or have access to their throwaway email, check that email's inbox to see if they got that message." );
+            System.out.println(
+                    "If you are a group that came after us, change the destination field to whatever email you want to send it to" );
+        }
+        catch ( final MessagingException e ) {
+            Assert.fail( "Something went wrong when sending email" + e.getMessage() );
+        }
+    }
 
     /**
      * Interface that allows multiple methods to be kept in an array
@@ -171,20 +171,16 @@ public class EmailFunctionalityTest {
     }
 
     private String thinking () {
-        return "â €â °â¡¿â ¿â ›â ›â »â ¿â£·\r\n"
-                + "â €â €â €â €â €â €â£€â£„â¡€â €â €â €â €â¢€â£€â£€â£¤â£„â£€â¡€\r\n"
+        return "â €â °â¡¿â ¿â ›â ›â »â ¿â£·\r\n" + "â €â €â €â €â €â €â£€â£„â¡€â €â €â €â €â¢€â£€â£€â£¤â£„â£€â¡€\r\n"
                 + "â €â €â €â €â €â¢¸â£¿â£¿â£·â €â €â €â €â ›â ›â£¿â£¿â£¿â¡›â ¿â ·\r\n"
                 + "â €â €â €â €â €â ˜â ¿â ¿â ‹â €â €â €â €â €â €â£¿â£¿â£¿â ‡\r\n"
-                + "â €â €â €â €â €â €â €â €â €â €â €â €â €â €â €â ˆâ ‰â �\r\n"
-                + "\r\n"
+                + "â €â €â €â €â €â €â €â €â €â €â €â €â €â €â €â ˆâ ‰â �\r\n" + "\r\n"
                 + "â €â €â €â €â£¿â£·â£„â €â¢¶â£¶â£·â£¶â£¶â£¤â£€\r\n"
                 + "â €â €â €â €â£¿â£¿â£¿â €â €â €â €â €â ˆâ ™â »â —\r\n"
                 + "â €â €â €â£°â£¿â£¿â£¿â €â €â €â €â¢€â£€â£ â£¤â£´â£¶â¡„\r\n"
                 + "â €â£ â£¾â£¿â£¿â£¿â£¥â£¶â£¶â£¿â£¿â£¿â£¿â£¿â ¿â ¿â ›â ƒ\r\n"
-                + "â¢°â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â¡„\r\n"
-                + "â¢¸â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â¡�\r\n"
-                + "â ˆâ¢¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â �\r\n"
-                + "â €â €â ›â¢¿â£¿â£¿â£¿â£¿â£¿â£¿â¡¿â Ÿ\r\n"
+                + "â¢°â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â¡„\r\n" + "â¢¸â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â¡�\r\n"
+                + "â ˆâ¢¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â£¿â �\r\n" + "â €â €â ›â¢¿â£¿â£¿â£¿â£¿â£¿â£¿â¡¿â Ÿ\r\n"
                 + "â €â €â €â €â €â ‰â ‰â ‰\r\n" + "";
     }
 
