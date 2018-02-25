@@ -42,7 +42,7 @@ public class DiagnosesStepDefs {
     @Before
     public void setup () {
         driver = new HtmlUnitDriver( true );
-        wait = new WebDriverWait( driver, 5 );
+        wait = new WebDriverWait( driver, 20 );
     }
 
     @After

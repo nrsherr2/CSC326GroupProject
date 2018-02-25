@@ -1,5 +1,7 @@
 package edu.ncsu.csc.itrust2.utils;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import edu.ncsu.csc.itrust2.models.persistent.User;
  * the iTrust Wiki) should be logged using one of the three `Log` methods here.
  *
  * @author Kai Presler-Marshall
+ * @author Vincent Renich
  *
  */
 public class LoggerUtil {
@@ -97,6 +100,36 @@ public class LoggerUtil {
      */
     static public List<LogEntry> getAllForUser ( final User user ) {
         return getAllForUser( user.getUsername() );
+    }
+
+    /**
+     * Retrieve the Log Entries for a given user, between the given dates
+     *
+     * @param user
+     *            The User to retrieve log entries for
+     * @param beginDate
+     *            the start date for the list of log entries to get, inclusive
+     * @param endDate
+     *            the end date for the list of log entries to get, exclusive
+     * @return The List of Log Entries that was found
+     */
+    static public List<LogEntry> getForUserInDateRange ( final User user, final Calendar beginDate,
+            final Calendar endDate ) {
+        final List<LogEntry> allLogs = getAllForUser( user.getUsername() );
+        final List<LogEntry> requestedLogs = new ArrayList<LogEntry>();
+        for ( final LogEntry log : allLogs ) {
+            if ( log.getTime().after( beginDate ) && log.getTime().before( endDate ) ) {
+                requestedLogs.add( log );
+            }
+        }
+        requestedLogs.sort( new Comparator<Object>() {
+            @Override
+            public int compare ( final Object arg0, final Object arg1 ) {
+                return ( (LogEntry) arg0 ).getTime().compareTo( ( (LogEntry) arg1 ).getTime() ) * -1;
+            }
+
+        } );
+        return requestedLogs;
     }
 
     /**

@@ -1,0 +1,148 @@
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:include="layout :: head(title=~{::title},links=~{})">
+		<title>Patient Access Logs</title>
+	</head>
+	<body th:include="layout :: body" th:with="content=~{::content}">
+    	<div th:fragment="content">
+        	<h1>Welcome to Access Logs - Patient</h1>
+
+	    	<script th:inline="javascript">
+            	/* Otherwise Thymeleaf tries to parse Javascript as XML and breaks itself sometimes.  Sigh */
+            	/*<![CDATA[*/
+            	var app = angular.module('viewLogsApp', []);
+            	app.controller('viewLogsCtrl', function ($scope, $http) {
+            		$scope.current = "";
+            		
+            		function getCurrentUser () {
+            			$http.get("/iTrust2/api/v1/currentuser").then(
+            				function (response) {
+            					$scope.current = response.data[0];
+            					console.log('please print here' + $scope.current);
+            				}, function (rejection) {
+            					$scope.current = "oh darn";
+            					console.log('please don\'t print here');
+            				}
+            			);
+            		}
+            		
+	                $scope.logs = [];
+	                function loadTable () {
+        	        	$http.get("/iTrust2/api/v1/logentries/" + "patient"/*$scope.current*/).then(			/* change to correct title/page and link to specific user */
+            	        	function (response) {
+                	    		$scope.logs = response.data;
+                	    		console.log('printing here');
+                    		}, function (rejection) {
+                    			$scope.logs = [];
+                    			console.log('printing there');
+                    		}
+                    	);
+                	}
+    	            
+	                /* Copied from editPrescriptions.html */
+	                var isDate = function (input) {
+	                  if (!input) {
+	                    return false;
+	                  }
+	                  var match = /^(\d?\d)\/(\d?\d)\/(\d{4})$/.exec(input);
+	                  if (!match) {
+	                    return false;
+	                  }
+	                  var parsedDate = {
+	                    year: +match[3],
+	                    month: +match[1] - 1,
+	                    day: +match[2]
+	                  };
+	                  var date = new Date(parsedDate.year, parsedDate.month, parsedDate.day);
+	                  return date.getFullYear() === parsedDate.year && date.getMonth() === parsedDate.month && date.getDate() === parsedDate.day;
+	                };
+
+	                $scope.getLogs = function () {
+	                  $http.get("/iTrust2/api/v1/logentriesrange/" + $scope.startDate.replace(/\//g, ".") + "/" + $scope.endDate.replace(/\//g, ".") + "/").then(
+	                    function (response) {
+	                      $scope.logs = response.data;
+	                      $scope.startDate = "";
+	                      $scope.endDate = "";
+	                    }, function (rejection) {
+	                   	  $scope.logs = [];
+	                    });
+
+	                  }
+
+	                
+    	            loadTable();
+	                getCurrentUser();
+            	});
+                    /*]]>*/
+            </script>
+        
+        	<div ng-app="viewLogsApp" ng-controller="viewLogsCtrl">
+      			<div class="container">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-default">
+								<div class="panel-heading ">Select Date Range</div>
+								<div class="panel-body">
+									<form class="form-horizontal" role="form" name="dateRangeForm" ng-submit="getLogs(dataRangeForm.$valid)">
+										<div class="row">
+											<!-- start date -->
+											<div class="col-md-5">
+												<label>Start Date:</label>
+												<div class="row">
+													<div class="col-md-4">
+														<input type="text" class="form-control" placeholder="MM/DD/YYYY" name="startDate" ng-model="startDate" required/>
+													</div>
+												</div>
+											</div>
+
+											<!-- end date -->
+											<div class="col-md-5">
+												<label>End Date:</label>
+												<div class="row">
+													<div class="col-md-4">
+														<input type="text" class="form-control" placeholder="MM/DD/YYYY" name="endDate" ng-model="endDate" required/>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<button type="submit" class="btn btn-success" name="submit">Get Access Logs</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+        			<div class="row">
+          				<div class="col-md-12">
+            				<div class="panel panel-primary">
+              					<div class="panel-heading">
+                					<h3>Access Logs for {{current}}</h3>	<!-- {{current}}-->
+              					</div>
+              					<div class="panel-body">
+                					<table class="table table-bordered">
+                  						<thead>
+                    						<tr>
+                      							<th>Accessor</th>
+                      							<th>Accessor Role</th>
+                      							<th>Date/Time</th>
+                      							<th>Transaction Type</th>
+                    						</tr>
+                  						</thead>
+                  						<tbody>
+                    						<tr name="logRows" ng-repeat="l in logs">
+                    							<td>{{l.accessor}}</td>
+                    							<td>{{l.accessorRole}}</td>
+                    							<td>{{l.dateandtime}}</td>
+                    							<td>{{l.transType}}</td>
+                    						</tr>
+                  						</tbody>
+                					</table>
+                				</div>
+                			</div>
+                		</div>
+                	</div>
+                </div>
+            </div>                				
+		</div>
+	</body>
+</html>

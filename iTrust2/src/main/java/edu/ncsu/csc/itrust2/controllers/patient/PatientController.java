@@ -41,6 +41,19 @@ public class PatientController {
     }
 
     /**
+     * return the access log page for a patient to view all Access Log entries
+     * 
+     * @param model
+     *            the data for the front end
+     * @return page to display for the user
+     */
+    @GetMapping ( "/patient/viewAccessLog" )
+    @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
+    public String vewAccessLog ( final Model model ) {
+        return "/patient/viewAccessLog";
+    }
+
+    /**
      * Returns the form page for a patient to view all prescriptions
      *
      * @param model

@@ -58,13 +58,17 @@ public class APILogEntryTest {
         mvc.perform( get( "/api/v1/logentries" ) ).andExpect( status().isOk() )
                 .andExpect( content().contentType( MediaType.APPLICATION_JSON_UTF8_VALUE ) );
 
-        final Long id = LogEntry.getLogEntries().get( 0 ).getId();
+        //final Long id = LogEntry.getLogEntries().get( 0 ).getId();
         // Test getting a specific log entry.
-        mvc.perform( get( "/api/v1/logentries/" + id ) ).andExpect( status().isOk() )
+        mvc.perform( get( "/api/v1/logentries/" + "patient" ) ).andExpect( status().isOk() )
                 .andExpect( content().contentType( MediaType.APPLICATION_JSON_UTF8_VALUE ) );
 
         // Test getting a non-existent log entry
         mvc.perform( get( "/api/v1/logentries/-1" ) ).andExpect( status().isNotFound() );
+        
+        // Test getting the top 10 entries
+        mvc.perform( get( "/api/v1/logentries/patient10" ) ).andExpect( status().isOk() )
+        .andExpect( content().contentType( MediaType.APPLICATION_JSON_UTF8_VALUE ) );
     }
 
 }

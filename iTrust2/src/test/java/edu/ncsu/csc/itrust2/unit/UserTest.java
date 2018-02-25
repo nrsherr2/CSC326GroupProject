@@ -53,7 +53,7 @@ public class UserTest {
      * Tests equals comparison of two user objects
      */
     @Test
-    public void TestFullEquals () {
+    public void testFullEquals () {
         User u1 = new User();
         User u2 = new User();
         u2.setEnabled( 1 );
