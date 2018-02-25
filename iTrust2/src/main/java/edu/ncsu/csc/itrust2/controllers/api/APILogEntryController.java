@@ -1,6 +1,5 @@
 package edu.ncsu.csc.itrust2.controllers.api;
 
-
 import java.util.ArrayList;
 
 import java.text.ParseException;
@@ -88,7 +87,37 @@ public class APILogEntryController extends APIController {
 
         return dataList;
     }
+
     // ***** Above is from Cameron's edits ***** //
+    @GetMapping ( BASE_PATH + "/logentries/patient10" ) // {username} instead of
+    // patient
+    public List<AccessLogData> getTop10ForPatient () {
+        final String user = LoggerUtil.currentUser();
+        // this will need to change to be more specific when changing between
+        // different users ^^
+        final List<LogEntry> userLog = new ArrayList<LogEntry>();
+        final int len = LogEntry.getAllForUser( user ).size();
+        for ( int i = 0; i < len; i++ ) {
+            userLog.add( LogEntry.getAllForUser( user ).get( len - i - 1 ) );
+        }
+
+        final List<AccessLogData> dataList = new ArrayList<AccessLogData>();
+        int listSize = userLog.size() < 10 ? userLog.size() : 10;
+        for ( int i = 0; i < listSize; i++ ) {
+            final String accessor = user; // username
+            String role = User.getByName( user /* username */ ).getRole().getLanding().split( "," )[0];
+            final String first = role.substring( 0, 1 ).toUpperCase();
+            role = role.split( "/" )[0];
+            role = first + role.substring( 1 );
+            final String date = userLog.get( i ).getTime().getTime().toString();
+            final String type = userLog.get( i ).getLogCode().getDescription();
+
+            final AccessLogData data = new AccessLogData( accessor, role, date, type );
+            dataList.add( data );
+        }
+
+        return dataList;
+    }
 
     /**
      * Retrieves and returns a List of LogEntries for a user by date range
