@@ -122,6 +122,13 @@ public class LoggerUtil {
                 requestedLogs.add( log );
             }
         }
+        requestedLogs.sort( new Comparator<Object>() {
+            @Override
+            public int compare ( final Object arg0, final Object arg1 ) {
+                return ( (LogEntry) arg0 ).getTime().compareTo( ( (LogEntry) arg1 ).getTime() ) * -1;
+            }
+
+        } );
         return requestedLogs;
     }
 

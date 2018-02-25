@@ -1,5 +1,6 @@
 package edu.ncsu.csc.itrust2.controllers.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,20 @@ public class APIUserController extends APIController {
 
     /** constant for hcp role */
     private static final String ROLE_HCP     = "ROLE_HCP";
+
+    /**
+     * Retrieves and returns a list of all Users in the system, regardless of
+     * their classification (including all Patients, all Personnel, and all
+     * users who do not have a further status specified)
+     *
+     * @return list of users
+     */
+    @GetMapping ( BASE_PATH + "/currentuser" )
+    public List<String> getCurrentUser () {
+        final ArrayList<String> list = new ArrayList<String>();
+        list.add( LoggerUtil.currentUser() );
+        return list;
+    }
 
     /**
      * Retrieves and returns a list of all Users in the system, regardless of
