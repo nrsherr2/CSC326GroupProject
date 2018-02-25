@@ -61,20 +61,21 @@ public class APILogEntryController extends APIController {
                                                           * @PathVariable final
                                                           * String username
                                                           */ ) {
-        LoggerUtil.log( TransactionType.VIEW_LOG_EVENTS, LoggerUtil.currentUser() );
+        final String user = LoggerUtil.currentUser();
+        LoggerUtil.log( TransactionType.VIEW_LOG_EVENTS, user );
         // this will need to change to be more specific when changing between
         // different users ^^
         final List<LogEntry> userLog = new ArrayList<LogEntry>();
-        final int len = LogEntry.getAllForUser( "patient" ).size();
+        final int len = LogEntry.getAllForUser( user ).size();
         for ( int i = 0; i < len; i++ ) {
-            userLog.add( LogEntry.getAllForUser( "patient" ).get( len - i - 1 ) );
+            userLog.add( LogEntry.getAllForUser( user ).get( len - i - 1 ) );
         }
 
         final List<AccessLogData> dataList = new ArrayList<AccessLogData>();
 
         for ( int i = 0; i < userLog.size(); i++ ) {
-            final String accessor = "patient"; // username
-            String role = User.getByName( "patient" /* username */ ).getRole().getLanding().split( "," )[0];
+            final String accessor = user; // username
+            String role = User.getByName( user /* username */ ).getRole().getLanding().split( "," )[0];
             final String first = role.substring( 0, 1 ).toUpperCase();
             role = role.split( "/" )[0];
             role = first + role.substring( 1 );
