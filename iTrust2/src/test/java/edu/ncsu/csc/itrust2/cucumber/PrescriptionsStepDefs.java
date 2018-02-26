@@ -175,8 +175,11 @@ public class PrescriptionsStepDefs {
     @When ( "submit the values for NDC (.+), name (.+), and description (.*)" )
     public void submitDrug ( final String ndc, final String name, final String description ) throws Exception {
         enterValue( "drug", name );
+        Thread.sleep( 5 );
         enterValue( "code", ndc );
+        Thread.sleep( 5 );
         enterValue( "description", description );
+        Thread.sleep( 5 );
         driver.findElement( By.name( "submit" ) ).click();
         Thread.sleep( 5 );
     }
