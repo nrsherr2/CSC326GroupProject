@@ -174,11 +174,15 @@ public class PrescriptionsStepDefs {
 
     @When ( "submit the values for NDC (.+), name (.+), and description (.*)" )
     public void submitDrug ( final String ndc, final String name, final String description ) throws Exception {
-        enterValue( "drug", name );
-        Thread.sleep( 5 );
-        enterValue( "code", ndc );
-        Thread.sleep( 5 );
-        enterValue( "description", description );
+        WebElement field = driver.findElement( By.name( "drug" ) );
+        field.clear();
+        field.sendKeys( name );
+        field = driver.findElement( By.name( "code" ) );
+        field.clear();
+        field.sendKeys( ndc );
+        field = driver.findElement( By.name( "description" ) );
+        field.clear();
+        field.sendKeys( description );
         Thread.sleep( 5 );
         driver.findElement( By.name( "submit" ) ).click();
         Thread.sleep( 5 );
@@ -186,6 +190,7 @@ public class PrescriptionsStepDefs {
 
     @Then ( "the drug (.+) is successfully added to the system" )
     public void drugSuccessful ( final String drug ) {
+        driver.get( DRUG_URL );
         wait.until( ExpectedConditions.textToBePresentInElementLocated( By.tagName( "body" ), drug ) );
         assertEquals( "", driver.findElement( By.id( "errP" ) ).getText() );
 
