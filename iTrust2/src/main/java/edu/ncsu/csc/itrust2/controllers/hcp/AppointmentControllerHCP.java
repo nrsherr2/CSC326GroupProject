@@ -17,6 +17,8 @@ import edu.ncsu.csc.itrust2.forms.patient.AppointmentRequestForm;
 import edu.ncsu.csc.itrust2.models.enums.Status;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
 import edu.ncsu.csc.itrust2.models.persistent.AppointmentRequest;
+import edu.ncsu.csc.itrust2.models.persistent.Patient;
+import edu.ncsu.csc.itrust2.utils.EmailUtil;
 import edu.ncsu.csc.itrust2.utils.LoggerUtil;
 
 /**
@@ -76,11 +78,26 @@ public class AppointmentControllerHCP {
         final String action = form.getAction();
         final AppointmentRequest ar = AppointmentRequest.getById( Long.valueOf( id ) );
         final boolean aptAction = action.equals( "reject" );
+        final Status oldStatus = ar.getStatus();
         ar.setStatus( aptAction ? Status.REJECTED : Status.APPROVED );
         ar.save();
         LoggerUtil.log(
                 aptAction ? TransactionType.APPOINTMENT_REQUEST_DENIED : TransactionType.APPOINTMENT_REQUEST_APPROVED,
                 ar.getHcp().getUsername(), ar.getPatient().getUsername() );
+        try {
+            final String patientEmail = Patient.getPatient( ar.getPatient() ).getEmail();
+            EmailUtil.sendEmail( patientEmail, "Appointment Status Update",
+                    "The status of your appointment request, id " + ar.getId() + " on " + ar.getDate()
+                            + " has been updated from " + oldStatus + " to " + ar.getStatus() );
+            LoggerUtil.log( TransactionType.APPOINTMENT_REQUEST_EMAIL_SENT, ar.getHcp() );
+        }
+        catch ( final Exception e ) {
+            LoggerUtil.log( TransactionType.MISSING_EMAIL_NOT_SENT, ar.getHcp() );
+            // return new ResponseEntity(
+            // errorResponse( "Could not update " + requestF.toString() + "
+            // because of " + e.getMessage() ),
+            // HttpStatus.BAD_REQUEST );
+        }
         return "hcp/viewAppointmentRequestsResult";
     }
 
