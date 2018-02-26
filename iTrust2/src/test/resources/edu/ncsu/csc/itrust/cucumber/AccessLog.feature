@@ -22,7 +22,7 @@ Given I am an authenticated user
 And my activity log has 11 entries
 When I log in
 And I choose to view my activity log
-Then I can see all entries in my history
+Then I can view everything in my log
 
 Scenario: Patient Viewable
 Given I am logged in as an admin
@@ -34,7 +34,7 @@ Given I am an authenticated user
 And my activity log has 11 entries
 And I choose to view my activity log
 When I put in an invalid date
-Then the page says invalid date
+Then there will be an empty log
 
 Scenario: Valid Date
 Given I am an authenticated user
