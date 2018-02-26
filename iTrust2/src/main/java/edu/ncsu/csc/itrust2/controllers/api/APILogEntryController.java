@@ -46,22 +46,13 @@ public class APILogEntryController extends APIController {
      * Retrieves and returns a List of all LogEntries in the system for a given
      * user, as AccessLogData
      *
-     * @param username
-     *            the name of the current user
-     *
      * @return list of log entries
      */
     // @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
-    @GetMapping ( BASE_PATH + "/logentries/patient" ) // {username} instead of
-                                                      // patient
-    public List<AccessLogData> getLogEntriesForPatient ( /*
-                                                          * @PathVariable final
-                                                          * String username
-                                                          */ ) {
+    @GetMapping ( BASE_PATH + "/logentries/patient" )
+    public List<AccessLogData> getLogEntriesForPatient () {
         final String user = LoggerUtil.currentUser();
         LoggerUtil.log( TransactionType.VIEW_LOG_EVENTS, user );
-        // this will need to change to be more specific when changing between
-        // different users ^^
         final List<LogEntry> userLog = new ArrayList<LogEntry>();
         final int len = LogEntry.getAllForUser( user ).size();
         for ( int i = 0; i < len; i++ ) {
@@ -165,8 +156,7 @@ public class APILogEntryController extends APIController {
         final Calendar endCalendar = Calendar.getInstance();
         endCalendar.setTime( parsedDate );
         endCalendar.add( Calendar.DAY_OF_MONTH, 1 );
-        final List<LogEntry> logList = LoggerUtil.getForUserInDateRange( User.getByName( LoggerUtil.currentUser() ),
-                beginCalendar, endCalendar );
+        final List<LogEntry> logList = LoggerUtil.getForUserInDateRange( user, beginCalendar, endCalendar );
         final List<AccessLogData> dataList = new ArrayList<AccessLogData>();
 
         for ( int i = 0; i < logList.size(); i++ ) {
