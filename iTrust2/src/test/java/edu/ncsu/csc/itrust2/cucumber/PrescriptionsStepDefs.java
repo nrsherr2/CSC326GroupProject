@@ -30,7 +30,7 @@ public class PrescriptionsStepDefs {
     private final WebDriver     driver    = new HtmlUnitDriver( true );
     private final String        baseUrl   = "http://localhost:8080/iTrust2";
 
-    WebDriverWait               wait      = new WebDriverWait( driver, 100 );
+    WebDriverWait               wait      = new WebDriverWait( driver, 30 );
 
     @Before
     public void setup () {
@@ -185,6 +185,9 @@ public class PrescriptionsStepDefs {
         field.sendKeys( description );
         Thread.sleep( 5 );
         driver.findElement( By.name( "submit" ) ).click();
+        driver.findElement( By.name( "submit" ) ).click();
+        driver.findElement( By.name( "submit" ) ).click();
+        driver.findElement( By.name( "submit" ) ).click();
         Thread.sleep( 5 );
     }
 
@@ -194,13 +197,13 @@ public class PrescriptionsStepDefs {
         wait.until( ExpectedConditions.textToBePresentInElementLocated( By.tagName( "body" ), drug ) );
         assertEquals( "", driver.findElement( By.id( "errP" ) ).getText() );
 
-        for ( final WebElement r : driver.findElements( By.name( "drugTableRow" ) ) ) {
+        /*for ( final WebElement r : driver.findElements( By.name( "drugTableRow" ) ) ) {
             if ( r.getText().contains( drug ) ) {
                 r.findElement( By.name( "deleteDrug" ) ).click();
             }
         }
         wait.until( ExpectedConditions
-                .not( ExpectedConditions.textToBePresentInElementLocated( By.tagName( "body" ), drug ) ) );
+                .not( ExpectedConditions.textToBePresentInElementLocated( By.tagName( "body" ), drug ) ) );*/
     }
 
 }
