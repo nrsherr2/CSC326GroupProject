@@ -78,7 +78,7 @@ public class APILogEntryTest {
         final int todayDate = today.get( Calendar.DAY_OF_MONTH );
         final int todayYear = today.get( Calendar.YEAR );
         final String todayString = String.format( "%02d.%02d.%04d", todayMonth, todayDate, todayYear );
-        System.out.println( "Today String: " + todayString );
+
         mvc.perform( get( "/api/v1/logentriesrange/" + todayString + "/" + todayString + "/" ) )
                 .andExpect( status().isOk() )
                 .andExpect( content().contentType( MediaType.APPLICATION_JSON_UTF8_VALUE ) );

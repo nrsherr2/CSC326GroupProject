@@ -68,10 +68,11 @@ public class APIPasswordController extends APIController {
                 // the first name of who we're sending to
                 String firstName = "";
                 // first check if this user is faculty
-                List<Personnel> faculty = Personnel.getPersonnel();
+                final List<Personnel> faculty = Personnel.getPersonnel();
                 Personnel person = null;
                 for ( int i = 0; i < faculty.size(); i++ ) {
-                    //System.out.println( "faclist includes " + faculty.get( i ).getSelf().getId() );
+                    // System.out.println( "faclist includes " + faculty.get( i
+                    // ).getSelf().getId() );
                     // I really don't expect this to work
                     if ( faculty.get( i ).getSelf().getId().equals( user.getId() ) ) {
                         person = faculty.get( i );
@@ -84,9 +85,10 @@ public class APIPasswordController extends APIController {
                 }
                 else {
                     Patient pat = null;
-                    List<Patient> patientList = Patient.getPatients();
+                    final List<Patient> patientList = Patient.getPatients();
                     for ( int i = 0; i < patientList.size(); i++ ) {
-                        //System.out.println( "Patlist includes " + patientList.get( i ).getSelf().getId() );
+                        // System.out.println( "Patlist includes " +
+                        // patientList.get( i ).getSelf().getId() );
                         if ( patientList.get( i ).getSelf().getId().equals( user.getId() ) ) {
                             pat = patientList.get( i );
                             break;
@@ -107,11 +109,17 @@ public class APIPasswordController extends APIController {
                         + ". This request has been processed by our servers, and you may now log in using your new password.\n"
                         + " If you did not request to change your password, please contact an administrator.\n\n--iTrust2 Ad"
                         + "min";
-                EmailUtil.sendEmail( email, "iTrust2 Password Change", body );
 
                 user.save();
                 LoggerUtil.log( TransactionType.PASSWORD_UPDATE_SUCCESS, user.getUsername(),
                         "Successfully changed password for user " + user.getUsername() );
+                try {
+                    EmailUtil.sendEmail( email, "iTrust2 Password Change", body );
+                    LoggerUtil.log( TransactionType.PASSWORD_CHANGE_SUCCESS_EMAIL_SENT, user.getUsername() );
+                }
+                catch ( final Exception e ) {
+                    LoggerUtil.log( TransactionType.MISSING_EMAIL_NOT_SENT, user.getUsername() );
+                }
                 return new ResponseEntity( successResponse( "Password changed successfully" ), HttpStatus.OK );
             }
 
@@ -130,32 +138,23 @@ public class APIPasswordController extends APIController {
         }
     }
 
-    /*private void sendNotification ( User user ) throws Exception {
-        final Personnel person = Personnel.getByName( user );
-        String email = "";
-        String firstName = "";
-        if ( person != null ) {
-            email = person.getEmail();
-            firstName = person.getFirstName();
-        }
-        else {
-            final Patient patient = Patient.getPatient( user );
-            if ( patient != null ) {
-                email = patient.getEmail();
-                firstName = patient.getFirstName();
-            }
-            else {
-                throw new Exception( "No Patient or Personnel on file for " + user.getId() );
-            }
-        }
-        final String time = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" ).format( new Date() );
-        final String body = "Hello, " + firstName + ",\n You, (" + user.getUsername()
-                + ") submitted a request to change your password at " + time
-                + ". This request has been processed by our servers, and you may now log in using your new password.\n"
-                + " If you did not request to change your password, please contact an administrator.\\n\\n--iTrust2 Ad"
-                + "min";
-        EmailUtil.sendEmail( email, "iTrust2 Password Change", body );
-    }*/
+    /*
+     * private void sendNotification ( User user ) throws Exception { final
+     * Personnel person = Personnel.getByName( user ); String email = ""; String
+     * firstName = ""; if ( person != null ) { email = person.getEmail();
+     * firstName = person.getFirstName(); } else { final Patient patient =
+     * Patient.getPatient( user ); if ( patient != null ) { email =
+     * patient.getEmail(); firstName = patient.getFirstName(); } else { throw
+     * new Exception( "No Patient or Personnel on file for " + user.getId() ); }
+     * } final String time = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS"
+     * ).format( new Date() ); final String body = "Hello, " + firstName +
+     * ",\n You, (" + user.getUsername() +
+     * ") submitted a request to change your password at " + time +
+     * ". This request has been processed by our servers, and you may now log in using your new password.\n"
+     * +
+     * " If you did not request to change your password, please contact an administrator.\\n\\n--iTrust2 Ad"
+     * + "min"; EmailUtil.sendEmail( email, "iTrust2 Password Change", body ); }
+     */
 
     /**
      * Used by an unauthenticated user to request a password reset. Sends an
