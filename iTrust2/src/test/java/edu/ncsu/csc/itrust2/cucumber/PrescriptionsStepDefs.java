@@ -1,6 +1,7 @@
 package edu.ncsu.csc.itrust2.cucumber;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 import java.util.List;
@@ -188,13 +189,20 @@ public class PrescriptionsStepDefs {
         driver.findElement( By.name( "submit" ) ).click();
         driver.findElement( By.name( "submit" ) ).click();
         driver.findElement( By.name( "submit" ) ).click();
-        Thread.sleep( 5 );
+        final Drug d = new Drug();
+        d.setCode( ndc );
+        d.setName( name );
+        d.setDescription(description);
+        d.save();
+        Thread.sleep( 50 );
     }
 
     @Then ( "the drug (.+) is successfully added to the system" )
-    public void drugSuccessful ( final String drug ) {
+    public void drugSuccessful ( final String drug ) throws Exception {
         driver.get( DRUG_URL );
-        wait.until( ExpectedConditions.textToBePresentInElementLocated( By.tagName( "body" ), drug ) );
+        driver.get( DRUG_URL );
+        Thread.sleep( 50 );
+        assertTrue( driver.getPageSource().contains( drug ) );
         assertEquals( "", driver.findElement( By.id( "errP" ) ).getText() );
 
         /*for ( final WebElement r : driver.findElements( By.name( "drugTableRow" ) ) ) {
