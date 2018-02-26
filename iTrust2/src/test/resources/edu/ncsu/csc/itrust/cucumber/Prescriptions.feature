@@ -42,4 +42,4 @@ Scenario Outline: Add New Drug
 	
 Examples:
 	| user  | ndc          | name         | description       |
-	| admin | 1234-5678-90 | Test Product | Strong antiseptic |
+	| admin | 1234-5678-90 | TestProduct | Strong antiseptic |
