@@ -125,8 +125,8 @@ public class PrescriptionsStepDefs {
     public void officeVisitSuccessful () {
         final WebElement msg = driver.findElement( By.name( "success" ) );
         assertEquals( "Office visit created successfully", msg.getText() );
-        final Drug d = Drug.getByCode( "1000-0001-10" );
-        d.delete();
+        //final Drug d = Drug.getByCode( "1000-0001-10" );
+        //d.delete();
     }
 
     @When ( "I choose to view my prescriptions" )
@@ -163,8 +163,8 @@ public class PrescriptionsStepDefs {
         }
 
         assertEquals( drug, retrievedPrescription.getDrug().getName() );
-        final Drug d = Drug.getByCode( "1000-0001-10" );
-        d.delete();
+        //final Drug d = Drug.getByCode( "1000-0001-10" );
+        //d.delete();
     }
 
     @When ( "I choose to add a new drug" )
